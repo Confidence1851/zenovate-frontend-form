@@ -1,0 +1,11 @@
+.sidebar {
+    @apply h-screen w-[400px] min-w-[400px] hidden;
+    @apply sticky top-0 bg-White-100 lg:block;
+    /* @apply overflow-y-scroll; */
+}
+.sidebar_wrapper {
+    @apply min-h-[600px] h-full;
+    border-top-right-radius: var(0.75rem);
+    border-bottom-right-radius: var(0.75rem);
+    @apply bg-OffWhite-100 px-8 pb-8 pt-20 flex flex-col justify-between overflow-y-scroll;
+}

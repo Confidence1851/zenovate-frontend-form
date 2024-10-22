@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ['deno']
+
+[phases.install]
+cmds = [
+    'deno install'
+]
+
+[phases.build]
+cmds = [
+    'deno task build'
+]
+
+[start]
+cmd = 'deno task build'
+
+[nixpacks]
+start-phase = "start"
