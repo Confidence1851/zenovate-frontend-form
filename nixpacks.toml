@@ -3,7 +3,7 @@ nixPkgs = ['deno']
 
 [phases.install]
 cmds = [
-    'deno install'
+    'deno task install'
 ]
 
 [phases.build]
@@ -12,7 +12,7 @@ cmds = [
 ]
 
 [start]
-cmd = 'deno task build'
+cmd = 'deno task start'
 
 [nixpacks]
 start-phase = "start"
