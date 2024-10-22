@@ -1,18 +1,22 @@
 [phases.setup]
-nixPkgs = ['deno_2']
+nixPkgs = ['bun']
 
 [phases.install]
 cmds = [
-    'deno task install'
+    'bun install --frozen-lockfile --production',
+    'bun add -d tsconfig-paths'
 ]
 
 [phases.build]
 cmds = [
-    'deno task build'
+    'bun run build'
 ]
 
 [start]
-cmd = 'deno task start'
+cmd = 'bun start'
 
-[nixpacks]
-start-phase = "start"
+[environment]
+NODE_ENV = 'production'
+
+[meta]
+expose = '3000'
