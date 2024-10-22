@@ -15,8 +15,5 @@ cmds = [
 [start]
 cmd = 'bun start'
 
-[environment]
-NODE_ENV = 'production'
-
 [meta]
 expose = '3000'
