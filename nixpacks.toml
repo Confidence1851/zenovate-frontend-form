@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['deno']
+nixPkgs = ['deno_2']
 
 [phases.install]
 cmds = [
