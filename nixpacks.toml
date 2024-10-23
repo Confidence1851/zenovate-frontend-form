@@ -3,7 +3,7 @@ nixPkgs = ['bun']
 
 [phases.install]
 cmds = [
-    'bun install --frozen-lockfile --production',
+    'bun install --production',
     'bun add -d tsconfig-paths'
 ]
 
