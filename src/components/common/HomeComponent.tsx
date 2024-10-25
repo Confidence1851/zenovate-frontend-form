@@ -16,6 +16,9 @@ import Info from '@/components/icons/info';
 import { ArrowRight } from 'iconsax-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
+import { useFormStore } from '@/stores/formStore';
+import { useEffect, useState } from 'react';
+import { startSession } from '@/server-actions/api.actions';
 
 const accordionData = [
 	{
@@ -55,13 +58,94 @@ const accordionData = [
 			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
 	},
 ];
-
 const HomeComponent = () => {
+	const getLocalSessionId = () => {
+		const storedData = JSON.parse(
+			localStorage.getItem('form-storage') ?? '{}',
+		);
+		return storedData?.state?.sessionId ?? '';
+	};
+
+	const [formSessionId, setFormSessionId] = useState(getLocalSessionId());
+	const setSessionId = useFormStore.getState().setSessionId;
 	const router = useRouter();
+
+	const canProceed = () => {
+		return formSessionId?.length > 0;
+	};
+
+	useEffect(() => {
+		const start = async () => {
+			try {
+				// 1. Get User Agent data
+				const userAgent = navigator.userAgent;
+
+				// 2. Get Geolocation data (async)
+				const getLocation = () => {
+					return new Promise((resolve) => {
+						// Check if geolocation is supported
+						if (!navigator.geolocation) {
+							console.warn(
+								'Geolocation is not supported by this browser.',
+							);
+							resolve(null);
+						}
+						navigator.geolocation.getCurrentPosition(
+							(position) =>
+								resolve({
+									latitude: position.coords.latitude,
+									longitude: position.coords.longitude,
+								}),
+							(error) => {
+								console.warn(
+									'Error getting geolocation:',
+									error.message,
+								);
+								resolve(null); // Proceed even if permission is denied or other error
+							},
+						);
+					});
+				};
+
+				// Check geolocation permission using Permissions API
+				const permissionStatus = await navigator.permissions.query({
+					name: 'geolocation',
+				});
+
+				let locationData = null;
+
+				if (permissionStatus.state === 'granted') {
+					locationData = await getLocation();
+				} else if (permissionStatus.state === 'prompt') {
+					locationData = await getLocation(); // Request location if not yet granted or denied
+				} else {
+					console.warn(
+						'Geolocation permission was denied. Proceeding without location.',
+					);
+				}
+
+				// 3. Combine data to send to API
+				const postData = {
+					userAgent,
+					location: locationData,
+				};
+
+				// 4. Send the data to API
+				const session = await startSession(postData);
+				setSessionId(session.data.id);
+				setFormSessionId(session.data.id);
+			} catch (error) {
+				console.error('Error in starting session:', error);
+			}
+		};
+
+		if (!getLocalSessionId()?.length > 0) {
+			start();
+		}
+	}, [formSessionId]);
+
 	const handleStart = async () => {
-		//logic to handle session and naviagting to dynamic session page
-		const sessionId = 'abssb-dff44-566-78888ff-gggh'; //place holder sessionID
-		router.push(`${sessionId}`);
+		router.push(`${formSessionId}`);
 	};
 	return (
 		<div className=" min-h-[70dvh]">
@@ -129,6 +213,7 @@ const HomeComponent = () => {
 					variant={'green'}
 					className="w-full text-xl flex justify-between items-center py-4"
 					onClick={handleStart}
+					disabled={!canProceed()}
 				>
 					<span className="uppercase">start</span>
 					<ArrowRight

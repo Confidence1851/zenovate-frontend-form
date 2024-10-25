@@ -25,13 +25,16 @@ import CheckoutBtn from '@/components/common/CheckoutBtn';
 import { checkout } from '@/server-actions/stripe.actions';
 import { Button } from '@/components/ui/button';
 import { formConditionalFields, formFields } from '@/utils/formFields';
+import { updateSession } from '@/server-actions/api.actions';
 
 const FormPage = () => {
+	const stat_ = useFormStore((state) => state);
 	const formData = useFormStore((state) => state.formData);
 	const currentStepIndex = useFormStore((state) => state.currentStepIndex);
 	const totalPrice = useFormStore((state) => state.totalPrice);
 	const sessionId = useFormStore((state) => state.sessionId);
 	const paid = useFormStore((state) => state.paid);
+	const selectedProducts = useFormStore((state) => state.selectedProducts);
 
 	const hasHydrated = useFormStore.persist.hasHydrated();
 	const form = useForm({
@@ -51,6 +54,8 @@ const FormPage = () => {
 		//on hydration, update from fields from data stored in localstorage
 		if (hasHydrated) {
 			const hydrateValues = () => {
+				setValue('sessionId', stat_['sessionId'] || '');
+
 				formFields.forEach((field) => {
 					if (field === 'consentAgreement') {
 						setValue(field, formData[field] || false);
@@ -122,6 +127,12 @@ const FormPage = () => {
 
 	const onSubmit = async () => {
 		//trigger stripe payment when it is on the payment stageF
+		formData['selectedProducts'] = selectedProducts;
+		await updateSession({
+			sessionId: sessionId,
+			step: stepHighlight,
+			formData: formData,
+		});
 		if (stepHighlight === 'payment' && !paid) {
 			const transaction = {
 				amount: totalPrice.toFixed(2),
