@@ -1,75 +1,67 @@
 'use client';
-import {
-	Accordion,
-	AccordionContent,
-	AccordionItem,
-	AccordionTrigger,
-} from '@/components/ui/accordion';
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '@/components/ui/tooltip';
-// import { Hand } from "lucide-react";
-import Info from '@/components/icons/info';
-import { ArrowRight } from 'iconsax-react';
+
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
+import {
+	Carousel,
+	CarouselContent,
+	CarouselItem,
+	CarouselNext,
+	CarouselPrevious,
+	type CarouselApi,
+} from '@/components/ui/carousel';
 
-const accordionData = [
-	{
-		id: '1',
-		title: 'less painful',
-		content:
-			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
-	},
-	{
-		id: '2',
-		title: 'ease of use',
-		content:
-			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
-	},
-	{
-		id: '3',
-		title: 'long shelf life',
-		content:
-			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
-	},
-	{
-		id: '4',
-		title: 'delivered to your door',
-		content:
-			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
-	},
-	{
-		id: '5',
-		title: 'optimized absorption',
-		content:
-			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
-	},
-	{
-		id: '6',
-		title: 'convenience at home',
-		content:
-			'Remember the pain of intramuscular injections? 1 in 3 patients complain of prolonged soreness after IM injections. On the other hand, subcutaneous injections are way less painful, enabling you to become a healthier version of yourself without the pain.',
-	},
-];
+import { useEffect, useState } from 'react';
+import { ArrowRightIcon } from 'lucide-react';
+import AccordionSlider from '../home-page/AccordionSlider';
+import { stepOne, stepThree, stepTwo } from '../home-page/slider';
+import TooltipSlider from '../home-page/TooltipSlider';
+import useScreenWidth from '@/hooks/useScreenWidth';
 
 const HomeComponent = () => {
+	const [current, setCurrent] = useState(0);
+	const [_, setCount] = useState(0);
+	const [api, setApi] = useState<CarouselApi>();
+	const screenWidth = useScreenWidth();
+
+	useEffect(() => {
+		if (!api) {
+			return;
+		}
+
+		setCount(api.scrollSnapList().length);
+		setCurrent(api.selectedScrollSnap() + 1);
+
+		api.on('select', () => {
+			setCurrent(api.selectedScrollSnap() + 1);
+		});
+	}, [api]);
+
+	const sliderData = [
+		<AccordionSlider stepData={stepOne} />,
+		<AccordionSlider stepData={stepTwo} />,
+		<AccordionSlider stepData={stepThree} />,
+	];
+	const toolTipData = [
+		<TooltipSlider stepData={stepOne} />,
+		<TooltipSlider stepData={stepTwo} />,
+		<TooltipSlider stepData={stepThree} />,
+	];
+
 	const router = useRouter();
 	const handleStart = async () => {
 		//logic to handle session and naviagting to dynamic session page
 		const sessionId = 'abssb-dff44-566-78888ff-gggh'; //place holder sessionID
 		router.push(`${sessionId}`);
 	};
+
 	return (
-		<div className=" min-h-[70dvh]">
-			<div className="mb-8 space-y-4 border-b border-Gray-100 pb-4">
+		<div className=" min-h-[70dvh] pb-10 overflow-hidden">
+			<div className="mb-8 space-y-4 border-b border-Gray-100 pb-4 px-2">
 				<h1 className="title t-h1">START YOUR JOURNEY</h1>
 				<h3 className="title t-h3">Why Choose Zenovate?</h3>
 				<div className="mx-auto">
-					<p className="max-w-prose text-center text-sm md:text-base font-medium">
+					<p className="max-w-prose text-center text-sm md:text-base font-medium mx-auto">
 						At Zenovate, we understand that choosing the right
 						healthcare products is crucial for your well-being.
 						Here’s why you can trust us to provide superior products
@@ -77,66 +69,56 @@ const HomeComponent = () => {
 					</p>
 				</div>
 			</div>
-			{/* Mobile accordion */}
-			<div className="px-4 flex flex-col gap-6 lg:hidden py-5">
-				<Accordion
-					type="single"
-					collapsible
-					className="gap-5 flex flex-col "
-				>
-					{accordionData.map((item) => (
-						<AccordionItem
-							value={item.id}
-							className="border-Gray-100 border rounded-sm"
-							key={item.id}
-						>
-							<AccordionTrigger className="uppercase transition-transform duration-500 text-[14px] md:text-base px-2 font-semibold border-b-0 data-[state=open]:bg-Black-100 data-[state=open]:text-White-100 data-[state=open]:no-underline data-[state=open]:rounded-t-[5px] ">
-								{item.title}
-							</AccordionTrigger>
-							<AccordionContent className="p-3 leading-4 md:leading-6 text-base md:text-lg">
-								{item.content}
-							</AccordionContent>
-						</AccordionItem>
-					))}
-				</Accordion>
-			</div>
-			{/* Desktop accordion */}
-			<div className="px-4 flex-col gap-6 hidden lg:block py-8 mt-8">
-				<TooltipProvider delayDuration={300}>
-					<div className="gap-x-5 gap-y-10 grid grid-cols-2">
-						{accordionData.map((item) => (
-							<Tooltip key={item.id}>
-								<TooltipTrigger
-									className="border-zinc-400 border rounded-sm flex justify-between items-center p-3 w-full"
-									type="button"
-								>
-									<h3 className="uppercase text-base font-semibold ">
-										{item.title}
-									</h3>
-									<Info className="material-symbols-sharp text-Green-300" />
-								</TooltipTrigger>
-								<TooltipContent className="bg-Black-100 text-White-100 w-full max-w-[500px] p-4 rounded-sm rela z-40 !-top-10">
-									<p className="text-base">{item.content}</p>
-								</TooltipContent>
-							</Tooltip>
+
+			<Carousel
+				opts={{
+					align: 'start',
+				}}
+				className="px-2 max-w-[1100px] mx-auto"
+				setApi={setApi}
+			>
+				{screenWidth <= 1024 ? (
+					<CarouselContent className="ml-0 min-w-0 gap-2">
+						{sliderData.map((item, i) => (
+							<CarouselItem key={i} className="pl-0">
+								{item}
+							</CarouselItem>
 						))}
-					</div>
-				</TooltipProvider>
-			</div>
-			<div className="mx-4">
-				<Button
-					size={'lg'}
-					variant={'green'}
-					className="w-full text-xl flex justify-between items-center py-4"
-					onClick={handleStart}
-				>
-					<span className="uppercase">start</span>
-					<ArrowRight
-						size="24"
-						className="text-secondary-foreground"
+					</CarouselContent>
+				) : (
+					<CarouselContent className="ml-0 min-w-0 gap-2">
+						{toolTipData.map((item, i) => (
+							<CarouselItem key={i} className="pl-0">
+								{item}
+							</CarouselItem>
+						))}
+					</CarouselContent>
+				)}
+
+				<div className="flex justify-between gap-10 items-center min-w-0 flex-wrap py-6">
+					<CarouselPrevious
+						className="min-w-[150px] !relative !left-0 !top-0  border-0 shadow-none p-2 h-11 uppercase translate-y-0 rounded-none w-fit bg-Green-100 text-Green-200 hover:bg-Green-100/95 hover:text-Green-200/90min-w-[150px] flex justify-between"
+						buttonText="Previous"
 					/>
-				</Button>
-			</div>
+
+					{current !== sliderData.length ? (
+						<CarouselNext
+							className="min-w-[150px] !relative !left-0 !top-0  border-0 shadow-none p-2 h-11 uppercase translate-y-0 rounded-none w-fit bg-Green-100 text-Green-200 hover:bg-Green-100/95 hover:text-Green-200/90  flex justify-between"
+							buttonText="Next"
+						/>
+					) : (
+						<Button
+							size={'lg'}
+							variant={'green'}
+							className="w-fit h-11 flex justify-between  items-center min-w-[150px] px-0 p-2"
+							onClick={handleStart}
+						>
+							<span className="uppercase text-sm">start</span>
+							<ArrowRightIcon className="h-4 w-4" />
+						</Button>
+					)}
+				</div>
+			</Carousel>
 		</div>
 	);
 };
