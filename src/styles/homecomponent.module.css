@@ -1,0 +1,5 @@
+.button {
+	@apply w-fit min-w-[150px] !relative !left-0 !top-0;
+	@apply flex border-0;
+	@apply shadow-none translate-y-0 justify-between;
+}

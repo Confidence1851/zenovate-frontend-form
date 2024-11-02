@@ -11,6 +11,8 @@ import {
 	type CarouselApi,
 } from '@/components/ui/carousel';
 
+import styles from '@/styles/homecomponent.module.css';
+
 import { useEffect, useState } from 'react';
 import { ArrowRightIcon } from 'lucide-react';
 import AccordionSlider from '../home-page/AccordionSlider';
@@ -97,23 +99,27 @@ const HomeComponent = () => {
 
 				<div className="flex justify-between gap-10 items-center min-w-0 flex-wrap py-6">
 					<CarouselPrevious
-						className="min-w-[150px] !relative !left-0 !top-0  border-0 shadow-none p-2 h-11 uppercase translate-y-0 rounded-none w-fit bg-Green-100 text-Green-200 hover:bg-Green-100/95 hover:text-Green-200/90min-w-[150px] flex justify-between"
+						className={styles.button}
 						buttonText="Previous"
+						variant={'green'}
+						size={'lg'}
 					/>
 
 					{current !== sliderData.length ? (
 						<CarouselNext
-							className="min-w-[150px] !relative !left-0 !top-0  border-0 shadow-none p-2 h-11 uppercase translate-y-0 rounded-none w-fit bg-Green-100 text-Green-200 hover:bg-Green-100/95 hover:text-Green-200/90  flex justify-between"
+							className={styles.button}
 							buttonText="Next"
+							variant={'green'}
+							size={'lg'}
 						/>
 					) : (
 						<Button
 							size={'lg'}
 							variant={'green'}
-							className="w-fit h-11 flex justify-between  items-center min-w-[150px] px-0 p-2"
+							className={styles.button}
 							onClick={handleStart}
 						>
-							<span className="uppercase text-sm">start</span>
+							<span>start</span>
 							<ArrowRightIcon className="h-4 w-4" />
 						</Button>
 					)}
