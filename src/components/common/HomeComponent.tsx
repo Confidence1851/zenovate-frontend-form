@@ -17,7 +17,8 @@ import { useEffect, useState } from 'react';
 import { ArrowRightIcon } from 'lucide-react';
 import AccordionSlider from '../home-page/AccordionSlider';
 import { stepOne, stepThree, stepTwo } from '../home-page/slider';
-import TooltipSlider from '../home-page/TooltipSlider';
+import dynamic from 'next/dynamic';
+const TooltipSlider = dynamic(() => import('../home-page/TooltipSlider'), { ssr: false });
 import useScreenWidth from '@/hooks/useScreenWidth';
 
 const HomeComponent = () => {
