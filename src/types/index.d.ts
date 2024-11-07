@@ -1,7 +1,14 @@
 interface Product {
   name: string;
   description: string;
-  content: string;
+  subtitle: string;
   price: number;
+}
+
+interface Checkout {
+  shipping_fee: number;
+  products: Poduct[];
+  sub_total: number;
+  total: number;
 }
 type Highlights = "info" | "product" | "payment" | "sign" | "questions";

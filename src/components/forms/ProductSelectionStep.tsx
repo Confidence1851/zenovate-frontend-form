@@ -30,6 +30,7 @@ const ProductSelectionStep = ({
     (state) => state.updateStepHighlight
   );
 
+
   useEffect(() => {
     updateStepHighlight("product");
   }, []);
@@ -38,7 +39,7 @@ const ProductSelectionStep = ({
       formTitle="Product Selection"
       formSubtitle="Please select the products you are interested in"
     >
-      <div className="py-10">
+      <div className="pb-8">
         <FormProductSelection
           control={control}
           name="selectedProducts"

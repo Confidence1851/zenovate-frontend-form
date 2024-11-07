@@ -26,6 +26,16 @@ export async function checkout(transaction: CheckoutTransactionParams) {
       buyerId: transaction.buyerId,
     },
     mode: "payment",
+    shipping_address_collection: {
+      allowed_countries: ['US', 'CA'],
+    },
+    payment_method_types: ['card'],
+    appearance: {
+      theme: 'stripe',
+      variables: {
+        colorPrimary: '#162c15',
+      },
+    },
     success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/${transaction.sessionId}`,
     cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}`,
   });

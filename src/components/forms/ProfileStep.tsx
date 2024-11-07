@@ -66,6 +66,7 @@ const ProfileStep = ({ control, errors }: ProfileStepFormProps) => {
         name="phoneNumber"
         errors={errors}
         label="phone number"
+        type="number"
         placeholder="123-246-7890"
       />
       <FormSelectPreferredContactMethod

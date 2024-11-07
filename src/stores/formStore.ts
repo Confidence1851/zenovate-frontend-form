@@ -12,6 +12,7 @@ interface FormState {
 }
 interface FormActions {
 	updateFormData: (field: string, value: any) => void;
+	setSelectedProducts: (data: Record<string, any>) => void;
 	setFormData: (data: Record<string, any>) => void;
 	setSessionId: (id: string) => void;
 	gotoNextStep: () => void;
@@ -66,6 +67,7 @@ const useFormStore = create(
 					return newState;
 				}),
 			setFormData: (data) => set(() => ({ formData: data })),
+			setSelectedProducts: (data) => set(() => ({ selectedProducts: data })),
 			gotoNextStep: () =>
 				set((state) => ({
 					currentStepIndex: state.currentStepIndex + 1,

@@ -132,6 +132,7 @@ const HomeComponent = () => {
 
 				// 4. Send the data to API
 				const session = await startSession(postData);
+				console.log(session);
 				setSessionId(session.data.id);
 				setFormSessionId(session.data.id);
 			} catch (error) {
@@ -139,7 +140,7 @@ const HomeComponent = () => {
 			}
 		};
 
-		if (!getLocalSessionId()?.length > 0) {
+		if (!(getLocalSessionId()?.length > 0)) {
 			start();
 		}
 	}, [formSessionId]);
