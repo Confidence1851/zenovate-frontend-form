@@ -26,7 +26,7 @@ const AdditionalInformationStepOne = ({
   const updateFormData = useFormStore((state) => state.updateFormData);
 
   const hasConcernsInjectables =
-    useFormStore((state) => state.formData["concernsInjectables"]) === "no"
+    useFormStore((state) => state.formData["injectablesConcerns"]) === "no"
       ? false
       : true;
   const hasNeedleFear =
@@ -34,8 +34,8 @@ const AdditionalInformationStepOne = ({
       ? false
       : true;
 
-  const concernsInjectables = useFormStore(
-    (state) => state.formData["concernsInjectables"]
+  const injectablesConcerns = useFormStore(
+    (state) => state.formData["injectablesConcerns"]
   );
   const needleFear = useFormStore((state) => state.formData["needleFear"]);
 
@@ -65,10 +65,10 @@ const AdditionalInformationStepOne = ({
         <FormSelectYesOrNo
           control={control}
           errors={errors}
-          name="concernsInjectables"
+          name="injectablesConcerns"
           label="Are you afraid or concerned with injectables?"
         />
-        {hasConcernsInjectables && concernsInjectables && (
+        {hasConcernsInjectables && injectablesConcerns && (
           <FormTextArea
             control={control}
             errors={errors}

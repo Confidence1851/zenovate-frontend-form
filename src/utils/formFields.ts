@@ -9,7 +9,7 @@ export const formConditionalFields = [
   { key: "autoimmuneDisorders", details: "autoimmuneDisordersDetails" },
   { key: "otherConditions", details: "otherConditionsDetails" },
   { key: "recentHealthChanges", details: "healthChangesDetails" },
-  { key: "concernsInjectables", details: "injectablesConcernsDetails" },
+  { key: "injectablesConcerns", details: "injectablesConcernsDetails" },
   { key: "needleFear", details: "needleConcernsDetails" },
 ];
 export const formFields = [
@@ -30,7 +30,7 @@ export const formFields = [
   "otherConditions",
   "lastCheckupDate",
   "recentHealthChanges",
-  "concernsInjectables",
+  "injectablesConcerns",
   "needleFear",
   "familyMedicalHistory",
   "additionalInfo",

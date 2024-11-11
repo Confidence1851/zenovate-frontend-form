@@ -31,7 +31,13 @@ export async function productList() {
         const response = await axios.get(url);
         return response.data; // Adjust according to the API response structure
     } catch (error) {
-        return { e: error.toString(), url: url };
+        return {
+            success: false,
+            message: error.toString(),
+            data: null,
+            url: url
+        };
+        throw new Error(error.toString()+" Url: "+url);
     }
 }
 
@@ -41,6 +47,12 @@ export async function getSession(id) {
         const response = await axios.get(url);
         return response.data; // Adjust according to the API response structure
     } catch (error) {
-        return { e: error.toString(), url: url };
+        return {
+            success: false,
+            message: error.toString(),
+            data: null,
+            url: url
+        };
+        throw new Error(error.toString()+" Url: "+url);
     }
 }

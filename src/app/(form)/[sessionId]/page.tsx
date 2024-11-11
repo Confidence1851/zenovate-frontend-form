@@ -116,6 +116,7 @@ const FormPage = () => {
 			return restartSession(url_id, true);
 		}
 		getSession(sessionId).then((v) => {
+		console.log(v);
 			if (v.success) {
 				setFormSession(v.data);
 				return;
@@ -139,6 +140,8 @@ const FormPage = () => {
 				return;
 			}
 		}
+		console.log("Redirecting back");
+
 		setSessionId('');
 		// setFormData({});
 		setSelectedProducts([]);
@@ -179,6 +182,7 @@ const FormPage = () => {
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
+		console.log("Form data" , formData)
 		//trigger stripe payment when it is on the payment stageF
 		formData['selectedProducts'] = selectedProducts;
 		const response = await updateSession({
@@ -187,6 +191,9 @@ const FormPage = () => {
 			formData: formData,
 		});
 		console.log("Update response", response);
+		if(!response.success ?? false){
+			return;
+		}
 		if (stepHighlight === 'payment') {
 			if (response?.data?.redirect_url) {
 				return (window.location = response.data.redirect_url);

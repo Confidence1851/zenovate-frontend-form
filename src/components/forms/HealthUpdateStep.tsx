@@ -55,7 +55,7 @@ const HealthUpdateStep = ({ control, errors }: HealthUpdateStepFormProps) => {
           control={control}
           name="lastCheckupDate"
           errors={errors}
-          label="When was the last date of your medical check-up"
+          label="When was the last date of your medical check-up?"
         />
 
         <FormSelectYesOrNo
