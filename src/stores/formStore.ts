@@ -12,7 +12,7 @@ interface FormState {
 }
 interface FormActions {
 	updateFormData: (field: string, value: any) => void;
-	setSelectedProducts: (data: Record<string, any>) => void;
+	setSelectedProducts: (data: Product[]) => void;
 	setFormData: (data: Record<string, any>) => void;
 	setSessionId: (id: string) => void;
 	gotoNextStep: () => void;
