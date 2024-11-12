@@ -26,6 +26,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script defer data-domain="application.zenovate.health" src="https://analytics.aes-studio.com/js/script.js"></script>
+      </head>
       <body className={`${barlow.className} antialiased`}>
         {children}
         <Toaster />

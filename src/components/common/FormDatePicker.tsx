@@ -86,9 +86,11 @@ const FormDatePicker = <TFormValues extends Record<string, unknown>>({
 								mode="single"
 								className="w-[300px]"
 								selected={
-									field.value && (typeof field.value === 'string' || field.value instanceof Date)
-										? new Date(field.value)
-										: undefined
+									// field.value && (typeof field.value === 'string' || field.value instanceof Date)
+									// 	? new Date(field.value)
+									// 	: undefined
+									// @ts-ignore
+									field.value ? new Date(field.value) : undefined
 								}
 								onSelect={(value) => {
 									if (value) {

@@ -1,6 +1,5 @@
 'use client';
 import { formSidebarMenu } from '@/utils/form';
-import React from 'react';
 import Logo from './Logo';
 import { Button } from '../ui/button';
 import { ArrowLeft } from 'lucide-react';
@@ -8,15 +7,32 @@ import { useFormStore } from '@/stores/formStore';
 import Link from 'next/link';
 import { ROUTES } from '@/utils/routes';
 import styles from '@/styles/sidebar.module.css';
+import { ArrowLeft2 } from 'iconsax-react';
+import { useMultistepForm } from '@/hooks/useMultiStepForm';
 
 const FormStepsSidebar = () => {
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
+	const currentStepIndex = useFormStore((state) => state.currentStepIndex);
+	const { back } = useMultistepForm([]);
 
 	return (
 		<div className={styles.sidebar}>
 			<div className={styles.sidebar_wrapper}>
 				<div className="space-y-10 ">
 					<Logo className="text-xl text-Gray-100 border-b border-Gray-400 pb-6 " />
+					{/* <Button
+						variant={'green'}
+						size={'lg'}
+						className="w-full flex justify-between items-center"
+						onClick={back}
+						disabled={currentStepIndex === 0}
+					>
+						<ArrowLeft2
+							size="24"
+							className="text-secondary-foreground"
+						/>
+						<span className="uppercase">Back</span>
+					</Button> */}
 
 					{/* middle  */}
 					<div className="relative fade-container">
@@ -27,12 +43,11 @@ const FormStepsSidebar = () => {
 									key={item.title}
 								>
 									<div
-										className={`${
-											stepHighlight ===
+										className={`${stepHighlight ===
 											item.stepHighlights
-												? 'text-Green-100'
-												: 'text-Gray-400'
-										} my-1 pb-2 rounded-sm`}
+											? 'text-Green-100'
+											: 'text-Gray-400'
+											} my-1 pb-2 rounded-sm`}
 									>
 										{item.icon(
 											stepHighlight ===
@@ -54,12 +69,11 @@ const FormStepsSidebar = () => {
 							))}
 						</div>
 						<div
-							className={` ${
-								stepHighlight === 'questions' ||
+							className={` ${stepHighlight === 'questions' ||
 								stepHighlight === 'sign'
-									? ' bg-gradient-to-t from-transparent to-OffWhite-100 from-20%'
-									: ' bg-gradient-to-b from-transparent to-OffWhite-100 from-20%'
-							} absolute -top-40 left-0 w-full h-[500px] pointer-events-none duration-700 `}
+								? ' bg-gradient-to-t from-transparent to-OffWhite-100 from-20%'
+								: ' bg-gradient-to-b from-transparent to-OffWhite-100 from-20%'
+								} absolute -top-40 left-0 w-full h-[500px] pointer-events-none duration-700 `}
 						/>
 					</div>
 				</div>
