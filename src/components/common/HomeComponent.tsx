@@ -29,10 +29,13 @@ const HomeComponent = () => {
 	const [api, setApi] = useState<CarouselApi>();
 	const screenWidth = useScreenWidth();
 	const getLocalSessionId = () => {
-		const storedData = JSON.parse(
-			localStorage.getItem('form-storage') ?? '{}',
-		);
-		return storedData?.state?.sessionId ?? '';
+		if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+			const storedData = JSON.parse(
+				localStorage.getItem('form-storage') ?? '{}',
+			);
+			return storedData?.state?.sessionId ?? '';
+		}
+		return ''; // Return a default value when localStorage is not available
 	};
 
 	const [formSessionId, setFormSessionId] = useState(getLocalSessionId());

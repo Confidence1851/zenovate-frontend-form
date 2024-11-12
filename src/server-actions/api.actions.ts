@@ -11,8 +11,9 @@ export async function startSession(data:object) {
         const response = await axios.post(url , data);
         return response.data; // Adjust according to the API response structure
     } catch (error) {
-        return { e: error.toString(), url: url };
-    }
+        const errMessage = (error as Error).message;
+        return { e: errMessage, url: url };
+      }
 }
 
 export async function updateSession(data: object) {
@@ -21,8 +22,9 @@ export async function updateSession(data: object) {
         const response = await axios.post(url , data);
         return response.data; // Adjust according to the API response structure
     } catch (error) {
-        return { e: error.toString(), url: url };
-    }
+        const errMessage = (error as Error).message;
+        return { e: errMessage, url: url };
+      }
 }
 
 export async function productList() {
@@ -31,28 +33,28 @@ export async function productList() {
         const response = await axios.get(url);
         return response.data; // Adjust according to the API response structure
     } catch (error) {
+        const errMessage = (error as Error).message;
         return {
             success: false,
-            message: error.toString(),
+            message: errMessage,
             data: null,
             url: url
         };
-        throw new Error(error.toString()+" Url: "+url);
     }
 }
 
-export async function getSession(id) {
+export async function getSession(id:string) {
     const url = baseUrl("/form/session/info/"+id);
     try {
         const response = await axios.get(url);
         return response.data; // Adjust according to the API response structure
     } catch (error) {
+        const errMessage = (error as Error).message;
         return {
             success: false,
-            message: error.toString(),
+            message: errMessage,
             data: null,
             url: url
         };
-        throw new Error(error.toString()+" Url: "+url);
     }
 }

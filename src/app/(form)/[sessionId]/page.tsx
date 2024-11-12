@@ -22,11 +22,10 @@ import AdditionalInformationStepTwo from '@/components/forms/AdditionalInformati
 import ConsentStep from '@/components/forms/ConsentStep';
 import PaymentStep from '@/components/forms/PaymentStep';
 import CheckoutBtn from '@/components/common/CheckoutBtn';
-import { checkout } from '@/server-actions/stripe.actions';
 import { Button } from '@/components/ui/button';
 import { formConditionalFields, formFields } from '@/utils/formFields';
 import { updateSession, getSession } from '@/server-actions/api.actions';
-import { redirect, usePathname, useSearchParams } from 'next/navigation';
+import {  usePathname, useSearchParams } from 'next/navigation';
 import { FormContext } from '@/utils/contexts';
 
 const FormPage = () => {
@@ -43,7 +42,7 @@ const FormPage = () => {
 	const setFormData = useFormStore.getState().setFormData;
 	const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
 	const setSelectedProducts = useFormStore.getState().setSelectedProducts;
-	const [formSession, setFormSession] = useState();
+	const [formSession, setFormSession] = useState<any | null | undefined>(undefined);
 
 	const hasHydrated = useFormStore.persist.hasHydrated();
 	const form = useForm({
@@ -136,7 +135,7 @@ const FormPage = () => {
 				setSessionId(session?.id ?? '');
 				setFormData(session?.formData ?? {});
 				setSelectedProducts(session?.formData?.selectedProducts ?? []);
-				window.location = '/' + session?.id ?? '';
+				window.location.href = '/' + (session?.id ?? '');
 				return;
 			}
 		}
@@ -146,7 +145,7 @@ const FormPage = () => {
 		// setFormData({});
 		setSelectedProducts([]);
 		setCurrentStepIndex(0);
-		window.location = '/';
+		window.location.href = '/';
 		return;
 	}
 
@@ -191,7 +190,7 @@ const FormPage = () => {
 			formData: formData,
 		});
 		console.log("Update response", response);
-		if(!response.success ?? false){
+		if(!(response.success ?? false)){
 			return;
 		}
 		if (stepHighlight === 'payment') {

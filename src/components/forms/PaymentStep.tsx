@@ -10,7 +10,7 @@ const PaymentStep = () => {
 	const updateStepHighlight = useFormStore(
 		(state) => state.updateStepHighlight,
 	);
-	const { formSession } = useContext(FormContext);
+	const { formSession } = useContext(FormContext)!;
 
 	useEffect(() => {
 		updateStepHighlight('payment');

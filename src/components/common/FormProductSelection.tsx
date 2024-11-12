@@ -48,8 +48,8 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		(state) => state.updateSelectedProducts,
 	);
 	const [products, setProducts] = useState<Product[]>([]);
-	const { formSession } = useContext(FormContext);
-
+	const { formSession } = useContext(FormContext)!;
+	
 	const handleSelect = (product: Product) => {
 		updateSelectedProducts(product);
 	};
