@@ -40,7 +40,7 @@ const AdditionalInformationStepTwo = ({
           control={control}
           errors={errors}
           name="familyMedicalHistory"
-          placeholder="please tell us about your family medical history"
+          placeholder="Please tell us about your family medical history"
           rows={5}
         />
 

@@ -26,8 +26,8 @@ type FormDatePickerProps<TFormValues extends FieldValues = FieldValues> = {
 	name: Path<TFormValues>;
 	label?: string;
 	errors?:
-		| Partial<DeepMap<TFormValues, FieldError>>
-		| FieldErrors<TFormValues>;
+	| Partial<DeepMap<TFormValues, FieldError>>
+	| FieldErrors<TFormValues>;
 	disableToday?: boolean;
 } & Omit<InputProps, 'name'>;
 
@@ -48,9 +48,8 @@ const FormDatePicker = <TFormValues extends Record<string, unknown>>({
 			render={({ field }) => (
 				<FormItem className="flex flex-col">
 					<p
-						className={`${
-							hasError ? 'error_tag' : 'text-Green-100'
-						} form-label `}
+						className={`${hasError ? 'error_tag' : 'text-Green-100'
+							} form-label `}
 					>
 						{label}
 					</p>
@@ -67,8 +66,8 @@ const FormDatePicker = <TFormValues extends Record<string, unknown>>({
 									{field.value ? (
 										<span>
 											{typeof field.value === 'string' ||
-											typeof field.value === 'number' ||
-											field.value instanceof Date
+												typeof field.value === 'number' ||
+												field.value instanceof Date
 												? format(field.value, 'PPP')
 												: 'Pick a date'}
 										</span>
@@ -86,18 +85,21 @@ const FormDatePicker = <TFormValues extends Record<string, unknown>>({
 							<Calendar
 								mode="single"
 								className="w-[300px]"
-								// @ts-ignore
 								selected={
+									// field.value && (typeof field.value === 'string' || field.value instanceof Date)
+									// 	? new Date(field.value)
+									// 	: undefined
 									// @ts-ignore
-									field.value ? new Date(field.value) : null
+									field.value ? new Date(field.value) : undefined
 								}
 								onSelect={(value) => {
 									if (value) {
-										field.onChange(new Date(value as Date));
-										updateFormData(name, value);
+										const dateValue = value instanceof Date ? value : new Date(value);
+										field.onChange(dateValue);
+										updateFormData(name, dateValue);
 									} else {
-										field.onChange(null);
-										updateFormData(name, null);
+										field.onChange(undefined);
+										updateFormData(name, undefined);
 									}
 								}}
 								disabled={
@@ -115,7 +117,7 @@ const FormDatePicker = <TFormValues extends Record<string, unknown>>({
 											date < new Date('1900-01-01') ||
 											date > eighteenYearsAgo || // Disable dates for people younger than 18
 											date.toDateString() ===
-												today.toDateString() // Disable today's date
+											today.toDateString() // Disable today's date
 										);
 									})
 								}
@@ -124,24 +126,24 @@ const FormDatePicker = <TFormValues extends Record<string, unknown>>({
 								toDate={
 									disableToday
 										? new Date(
-												new Date().getFullYear() - 18,
-												new Date().getMonth(),
-												new Date().getDate(),
-											)
+											new Date().getFullYear() - 18,
+											new Date().getMonth(),
+											new Date().getDate(),
+										)
 										: new Date()
 								}
 								captionLayout="dropdown-buttons"
 								defaultMonth={
 									field.value &&
-									disableToday &&
-									(typeof field.value === 'string' ||
-										field.value instanceof Date)
+										disableToday &&
+										(typeof field.value === 'string' ||
+											field.value instanceof Date)
 										? new Date(field.value)
 										: new Date(
-												new Date().getFullYear() - 18,
-												new Date().getMonth(),
-												new Date().getDate(),
-											)
+											new Date().getFullYear() - 18,
+											new Date().getMonth(),
+											new Date().getDate(),
+										)
 								}
 							/>
 						</PopoverContent>

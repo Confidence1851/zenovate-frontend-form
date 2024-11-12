@@ -1,7 +1,7 @@
 'use client';
 
 import { useMultistepForm } from '@/hooks/useMultiStepForm';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { formValidationSchema } from '@/schemas/formSchema';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,13 +25,25 @@ import CheckoutBtn from '@/components/common/CheckoutBtn';
 import { checkout } from '@/server-actions/stripe.actions';
 import { Button } from '@/components/ui/button';
 import { formConditionalFields, formFields } from '@/utils/formFields';
+import { updateSession, getSession } from '@/server-actions/api.actions';
+import { redirect, usePathname, useSearchParams } from 'next/navigation';
+import { FormContext } from '@/utils/contexts';
 
 const FormPage = () => {
+	const pathname = usePathname();
+	const searchParams = useSearchParams();
+	const stat_ = useFormStore((state) => state);
 	const formData = useFormStore((state) => state.formData);
 	const currentStepIndex = useFormStore((state) => state.currentStepIndex);
 	const totalPrice = useFormStore((state) => state.totalPrice);
 	const sessionId = useFormStore((state) => state.sessionId);
 	const paid = useFormStore((state) => state.paid);
+	const selectedProducts = useFormStore((state) => state.selectedProducts);
+	const setSessionId = useFormStore.getState().setSessionId;
+	const setFormData = useFormStore.getState().setFormData;
+	const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
+	const setSelectedProducts = useFormStore.getState().setSelectedProducts;
+	const [formSession, setFormSession] = useState();
 
 	const hasHydrated = useFormStore.persist.hasHydrated();
 	const form = useForm({
@@ -51,6 +63,8 @@ const FormPage = () => {
 		//on hydration, update from fields from data stored in localstorage
 		if (hasHydrated) {
 			const hydrateValues = () => {
+				setValue('sessionId', stat_['sessionId'] || '');
+
 				formFields.forEach((field) => {
 					if (field === 'consentAgreement') {
 						setValue(field, formData[field] || false);
@@ -91,6 +105,53 @@ const FormPage = () => {
 		setValue('country', formData['country']);
 	}, [street]);
 
+	useEffect(() => {
+		validateSession();
+	}, [sessionId, pathname]);
+
+	function validateSession() {
+		const url_id = pathname.replace('/', '');
+		console.log(url_id, sessionId);
+		if (url_id != sessionId) {
+			return restartSession(url_id, true);
+		}
+		getSession(sessionId).then((v) => {
+		console.log(v);
+			if (v.success) {
+				setFormSession(v.data);
+				return;
+			}
+			return restartSession(sessionId, false);
+		});
+	}
+
+	async function restartSession(id: string, check: boolean) {
+
+		if (check) {
+			const v = await getSession(id);
+			if (v.success) {
+				const session = v.data;
+				console.log(session);
+				setFormSession(session);
+				setSessionId(session?.id ?? '');
+				setFormData(session?.formData ?? {});
+				setSelectedProducts(session?.formData?.selectedProducts ?? []);
+				window.location = '/' + session?.id ?? '';
+				return;
+			}
+		}
+		console.log("Redirecting back");
+
+		setSessionId('');
+		// setFormData({});
+		setSelectedProducts([]);
+		setCurrentStepIndex(0);
+		window.location = '/';
+		return;
+	}
+
+	console.log(formSession);
+
 	const steps = useMemo(
 		() => [
 			<ProfileStep control={control} errors={errors} />,
@@ -121,18 +182,31 @@ const FormPage = () => {
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
+		console.log("Form data" , formData)
 		//trigger stripe payment when it is on the payment stageF
-		if (stepHighlight === 'payment' && !paid) {
-			const transaction = {
-				amount: totalPrice.toFixed(2),
-				plan: 'Monthly plan',
-				buyerId: formData['email'],
-				sessionId,
-			};
-			return await checkout(transaction);
+		formData['selectedProducts'] = selectedProducts;
+		const response = await updateSession({
+			sessionId: sessionId,
+			step: stepHighlight,
+			formData: formData,
+		});
+		console.log("Update response", response);
+		if(!response.success ?? false){
+			return;
+		}
+		if (stepHighlight === 'payment') {
+			if (response?.data?.redirect_url) {
+				return (window.location = response.data.redirect_url);
+			}
+			if (!response?.data?.paid) {
+				return;
+			}
+		}
+		if (stepHighlight === 'sign') {
+			setFormData({});
+			return restartSession("", false);
 		}
 		if (!isLastStep) return next();
-		console.log(formData);
 	};
 
 	return (
@@ -140,37 +214,39 @@ const FormPage = () => {
 			<div className="lg:hidden">
 				<FormProgressBar className="justify-center" />
 			</div>
-			<Form {...form}>
-				<form
-					onSubmit={handleSubmit(onSubmit)}
-					className="space-y-8 py-4"
-				>
-					{step}
-					<div className="flex flex-col justify-end gap-4">
-						{stepHighlight === 'payment' && !paid ? (
-							<CheckoutBtn />
-						) : (
-							<Button
-								variant={'green'}
-								size={'lg'}
-								type="submit"
-								className="w-full flex justify-between items-center"
-							>
-								<span className="uppercase">
-									{isLastStep ? 'Finish' : 'Next'}
-								</span>
-								<ArrowRight
-									size="24"
-									className="text-secondary-foreground"
-								/>
-							</Button>
-						)}
-					</div>
-				</form>
-			</Form>
-			<div className="hidden lg:block">
-				<FormProgressBar className="justify-end" />
-			</div>
+			<FormContext.Provider value={{ formSession, setFormSession }}>
+				<Form {...form}>
+					<form
+						onSubmit={handleSubmit(onSubmit)}
+						className="space-y-8 py-4"
+					>
+						{step}
+						<div className="flex flex-col justify-end gap-4">
+							{stepHighlight === 'payment' && !paid ? (
+								<CheckoutBtn />
+							) : (
+								<Button
+									variant={'green'}
+									size={'lg'}
+									type="submit"
+									className="w-full flex justify-between items-center"
+								>
+									<span className="uppercase">
+										{isLastStep ? 'Finish & Exist Form' : 'Next'}
+									</span>
+									<ArrowRight
+										size="24"
+										className="text-secondary-foreground"
+									/>
+								</Button>
+							)}
+						</div>
+					</form>
+				</Form>
+				<div className="hidden lg:block">
+					<FormProgressBar className="justify-end" />
+				</div>
+			</FormContext.Provider>
 		</div>
 	);
 };

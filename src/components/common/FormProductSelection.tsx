@@ -14,11 +14,13 @@ import {
 } from 'react-hook-form';
 
 import { FormField, FormItem, FormMessage } from '../ui/form';
-import { useEffect } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { InputProps } from '../ui/input';
 import { useFormStore } from '@/stores/formStore';
 import { Button } from '../ui/button';
 import { ArrowRight } from 'lucide-react';
+import { productList } from '@/server-actions/api.actions';
+import { FormContext } from "@/utils/contexts";
 
 type FormProductSelectionProps<TFormValues extends FieldValues = FieldValues> =
 	{
@@ -27,8 +29,8 @@ type FormProductSelectionProps<TFormValues extends FieldValues = FieldValues> =
 		label?: string;
 		placeholder?: string;
 		errors?:
-			| Partial<DeepMap<TFormValues, FieldError>>
-			| FieldErrors<TFormValues>;
+		| Partial<DeepMap<TFormValues, FieldError>>
+		| FieldErrors<TFormValues>;
 		className?: string;
 		setValue: UseFormSetValue<FieldValues>;
 	} & Omit<InputProps, 'name'>;
@@ -45,6 +47,8 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 	const updateSelectedProducts = useFormStore(
 		(state) => state.updateSelectedProducts,
 	);
+	const [products, setProducts] = useState<Product[]>([]);
+	const { formSession } = useContext(FormContext);
 
 	const handleSelect = (product: Product) => {
 		updateSelectedProducts(product);
@@ -54,14 +58,30 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		setValue('selectedProducts', selectedProducts);
 	}, [selectedProducts]);
 
+	useEffect(() => {
+		function list() {
+			productList().then((v) => {
+				setProducts(v.data);
+			});
+		}
+		list();
+	}, []);
+
+
+
 	return (
 		<FormField
 			control={control}
 			name={name}
 			render={({ field }) => (
 				<FormItem>
-					<div className="relative flex min-w-0 flex-grow gap-8 overflow-x-scroll py-8 custom-scrollbar items-stretch justify-stretch">
-						{data.map((item) => (
+					{(formSession?.payment?.attempts ?? 0) > 0 && formSession?.payment?.message ? (
+						<div className={formSession?.payment?.success ? 'bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative' : 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative'}>
+							{formSession?.payment?.message}
+						</div>
+					) : <div className='pt-4'></div>}
+					<div className="relative flex min-w-0 flex-grow gap-8 overflow-x-scroll py-8 mt-6 custom-scrollbar items-stretch justify-stretch">
+						{products.map((item) => (
 							<div
 								className=" gap-4 h-80 w-[300px] p-8 flex flex-col justify-between border border-Black-100 flex-shrink-0"
 								key={item.name}
@@ -72,41 +92,45 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 											{item.name}
 										</h3>
 										<h4 className="text-base text-Gray-100 uppercase">
-											{item.description}
+											{item.subtitle}
 										</h4>
 									</div>
 									<p className="text-base text-Gray-100">
-										{item.content}
+										{item.description}
 									</p>
 								</div>
 
 								<div className="flex justify-between items-center">
 									<Button
+										disabled={(formSession?.payment?.success ?? true)}
 										type="button"
 										variant={'green'}
-										className={`${
-											selectedProducts.some(
-												(selectedItem) =>
-													selectedItem.name.toLowerCase() ===
-													item.name.toLowerCase(),
-											)
-												? ''
-												: 'bg-transparent border border-Black-100 text-my_dark'
-										}    flex justify-between items-center uppercase  h-11`}
+										className={`${selectedProducts.some(
+											(selectedItem) =>
+												selectedItem.name.toLowerCase() ===
+												item.name.toLowerCase(),
+										)
+											? ''
+											: 'bg-transparent border border-Black-100 text-my_dark'
+											}    flex justify-between items-center uppercase  h-11`}
 										onClick={() => {
+											// If the use has already paid for this session, prevent them from changing selection
+											if ((formSession?.payment?.success ?? true)) {
+												return;
+											}
 											handleSelect(item);
 											selectedProducts.includes(item)
 												? field.onChange(
-														selectedProducts.filter(
-															(prod) =>
-																prod.name !==
-																item.name.toLowerCase(),
-														),
-													)
+													selectedProducts.filter(
+														(prod) =>
+															prod.name !==
+															item.name.toLowerCase(),
+													),
+												)
 												: field.onChange([
-														...selectedProducts,
-														item,
-													]);
+													...selectedProducts,
+													item,
+												]);
 										}}
 									>
 										<span>
@@ -140,66 +164,3 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 };
 
 export default FormProductSelection;
-
-const data = [
-	{
-		name: 'tripleDefense',
-		description: 'Enhanced defense system',
-		content: 'Optimized protection through a triple-component strategy.',
-		items: ['Calcium', 'Magnesium', 'Glucosamine'],
-		price: 39.99,
-	},
-	{
-		name: 'shapeup',
-		description: 'Fitness and health conditioning',
-		content:
-			'A holistic approach to improving physical fitness and overall well-being.',
-		items: [
-			'Personalized Workout Plans',
-			'Nutritional Guidance',
-			'Progress Tracking',
-		],
-		price: 49.99,
-	},
-	{
-		name: 'phoslim',
-		description: 'Metabolic & weight management',
-		content:
-			'Designed to support a healthy metabolism and assist in weight control.',
-		price: 34.99,
-	},
-	{
-		name: 'methylB12',
-		description: 'Brain & nerve function',
-		content:
-			'Vitamin B12 in its most bioavailable form to support neurological health.',
-		price: 29.99,
-	},
-	{
-		name: 'nadCreation',
-		description: 'Boosts cellular energy and repair',
-		content: 'Critical for energy metabolism and cellular health.',
-		price: 44.99,
-	},
-	{
-		name: 'biotinLixer',
-		description: 'Biotin to strengthen hair & skin',
-		content:
-			'A rich blend of biotin to strengthen and beautify hair, skin, and nails.',
-		price: 24.99,
-	},
-	{
-		name: 'glutathione',
-		description:
-			'Powerful antioxidant for detoxification and immune support',
-		content: 'Supports detox processes and enhances antioxidant defenses.',
-		price: 54.99,
-	},
-	{
-		name: 'vitaminD3',
-		description: 'Essential for bone health and immune function',
-		content:
-			'Critical for maintaining bone density and supporting immune system health.',
-		price: 19.99,
-	},
-];

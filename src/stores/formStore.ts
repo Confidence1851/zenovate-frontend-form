@@ -12,7 +12,9 @@ interface FormState {
 }
 interface FormActions {
 	updateFormData: (field: string, value: any) => void;
+	setSelectedProducts: (data: Record<string, any>) => void;
 	setFormData: (data: Record<string, any>) => void;
+	setSessionId: (id: string) => void;
 	gotoNextStep: () => void;
 	gotoPrevStep: () => void;
 	setCurrentStepIndex: (index: number) => void;
@@ -26,7 +28,7 @@ const useFormStore = create(
 		(set) => ({
 			formData: {},
 			currentStepIndex: 0,
-			sessionId: 'dggikks_122*jjs122_233xbbss',
+			sessionId: '',
 			totalPrice: 0,
 			selectedProducts: [],
 			stepHighlight: 'info',
@@ -65,6 +67,7 @@ const useFormStore = create(
 					return newState;
 				}),
 			setFormData: (data) => set(() => ({ formData: data })),
+			setSelectedProducts: (data) => set(() => ({ selectedProducts: data })),
 			gotoNextStep: () =>
 				set((state) => ({
 					currentStepIndex: state.currentStepIndex + 1,
@@ -75,6 +78,8 @@ const useFormStore = create(
 				})),
 			setCurrentStepIndex: (index: number) =>
 				set(() => ({ currentStepIndex: index })),
+			setSessionId: (id: string) =>
+				set(() => ({ sessionId: id })),
 		}),
 
 		{

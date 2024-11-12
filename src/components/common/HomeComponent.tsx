@@ -20,12 +20,23 @@ import { stepOne, stepThree, stepTwo } from '../home-page/slider';
 import dynamic from 'next/dynamic';
 const TooltipSlider = dynamic(() => import('../home-page/TooltipSlider'), { ssr: false });
 import useScreenWidth from '@/hooks/useScreenWidth';
+import { useFormStore } from '@/stores/formStore';
+import { startSession } from '@/server-actions/api.actions';
 
 const HomeComponent = () => {
 	const [current, setCurrent] = useState(0);
 	const [_, setCount] = useState(0);
 	const [api, setApi] = useState<CarouselApi>();
 	const screenWidth = useScreenWidth();
+	const getLocalSessionId = () => {
+		const storedData = JSON.parse(
+			localStorage.getItem('form-storage') ?? '{}',
+		);
+		return storedData?.state?.sessionId ?? '';
+	};
+
+	const [formSessionId, setFormSessionId] = useState(getLocalSessionId());
+	const setSessionId = useFormStore.getState().setSessionId;
 
 	useEffect(() => {
 		if (!api) {
@@ -52,10 +63,84 @@ const HomeComponent = () => {
 	];
 
 	const router = useRouter();
+
+	const canProceed = () => {
+		return formSessionId?.length > 0;
+	};
+
+	useEffect(() => {
+		const start = async () => {
+			try {
+				// 1. Get User Agent data
+				const userAgent = navigator.userAgent;
+
+				// 2. Get Geolocation data (async)
+				const getLocation = () => {
+					return new Promise((resolve) => {
+						// Check if geolocation is supported
+						if (!navigator.geolocation) {
+							console.warn(
+								'Geolocation is not supported by this browser.',
+							);
+							resolve(null);
+						}
+						navigator.geolocation.getCurrentPosition(
+							(position) =>
+								resolve({
+									latitude: position.coords.latitude,
+									longitude: position.coords.longitude,
+								}),
+							(error) => {
+								console.warn(
+									'Error getting geolocation:',
+									error.message,
+								);
+								resolve(null); // Proceed even if permission is denied or other error
+							},
+						);
+					});
+				};
+
+				// Check geolocation permission using Permissions API
+				const permissionStatus = await navigator.permissions.query({
+					name: 'geolocation',
+				});
+
+				let locationData = null;
+
+				if (permissionStatus.state === 'granted') {
+					locationData = await getLocation();
+				} else if (permissionStatus.state === 'prompt') {
+					locationData = await getLocation(); // Request location if not yet granted or denied
+				} else {
+					console.warn(
+						'Geolocation permission was denied. Proceeding without location.',
+					);
+				}
+
+				// 3. Combine data to send to API
+				const postData = {
+					userAgent,
+					location: locationData,
+				};
+
+				// 4. Send the data to API
+				const session = await startSession(postData);
+				console.log(session);
+				setSessionId(session.data.id);
+				setFormSessionId(session.data.id);
+			} catch (error) {
+				console.error('Error in starting session:', error);
+			}
+		};
+
+		if (!(getLocalSessionId()?.length > 0)) {
+			start();
+		}
+	}, [formSessionId]);
+
 	const handleStart = async () => {
-		//logic to handle session and naviagting to dynamic session page
-		const sessionId = 'abssb-dff44-566-78888ff-gggh'; //place holder sessionID
-		router.push(`${sessionId}`);
+		router.push(`${formSessionId}`);
 	};
 
 	return (
@@ -119,6 +204,7 @@ const HomeComponent = () => {
 							variant={'green'}
 							className={styles.button}
 							onClick={handleStart}
+							disabled={!canProceed()}
 						>
 							<span>start</span>
 							<ArrowRightIcon className="h-4 w-4" />

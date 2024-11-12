@@ -164,7 +164,11 @@ export const formValidationSchema = [
       .string({ required_error: "Country is required" })
       .refine((data) => data.trim() !== "", {
         message: "Country is required",
-      }),
+      })
+      .refine((val) => {
+        const country = val.trim();
+        return ["United States" , "Canada"].includes(country)
+      }, "We only accept orders from United States and Canada at the moment.")
   }),
   // Product selection
   z.object({
@@ -216,10 +220,7 @@ export const formValidationSchema = [
   }),
   //Additional Information step one
   z.object({
-    lastCheckupDate: z.date({
-      required_error: "Date of last checkup is required",
-    }),
-    concernsInjectables: z.enum(["yes", "no"], { message: "Select an option" }),
+    injectablesConcerns: z.enum(["yes", "no"], { message: "Select an option" }),
     injectablesConcernsDetails: z.string().optional(),
     needleFear: z.enum(["yes", "no"], { message: "Select an option" }),
     needleConcernsDetails: z.string().optional(),

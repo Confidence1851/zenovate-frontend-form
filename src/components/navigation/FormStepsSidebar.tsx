@@ -86,7 +86,7 @@ const FormStepsSidebar = () => {
 							<span>back to home</span>
 						</Button>
 					</Link>
-					<Link href={ROUTES.SIGNIN}>
+					<Link href={process.env.NEXT_PUBLIC_SIGNIN_URL ?? ''}>
 						<Button className="p-0 bg-transparent uppercase text-primary shadow-none font-semibold">
 							sign in
 						</Button>
