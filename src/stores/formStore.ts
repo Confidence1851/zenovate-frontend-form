@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface FormState {
 	formData: Record<string, any>;
+	fields: Record<string, any>;
 	currentStepIndex: number;
 	sessionId: string;
 	totalPrice: number;
@@ -11,6 +12,7 @@ interface FormState {
 	paid: boolean;
 }
 interface FormActions {
+	setField: (field: string, value: any) => void;
 	updateFormData: (field: string, value: any) => void;
 	setSelectedProducts: (data: Product[]) => void;
 	setFormData: (data: Record<string, any>) => void;
@@ -26,6 +28,7 @@ interface FormActions {
 const useFormStore = create(
 	persist<FormState & FormActions>(
 		(set) => ({
+			fields: {},
 			formData: {},
 			currentStepIndex: 0,
 			sessionId: '',
@@ -43,10 +46,10 @@ const useFormStore = create(
 					);
 					const updatedProducts = check
 						? state.selectedProducts.filter(
-								(item) =>
-									item.name.toLowerCase() !==
-									product.name.toLowerCase(),
-							)
+							(item) =>
+								item.name.toLowerCase() !==
+								product.name.toLowerCase(),
+						)
 						: [...state.selectedProducts, product];
 
 					const updatedPrice = check
@@ -63,6 +66,13 @@ const useFormStore = create(
 				set((state) => {
 					const newState = {
 						formData: { ...state.formData, [field]: value },
+					};
+					return newState;
+				}),
+			setField: (field: string, value: any) =>
+				set((state) => {
+					const newState = {
+						fields: { ...state.fields, [field]: value },
 					};
 					return newState;
 				}),

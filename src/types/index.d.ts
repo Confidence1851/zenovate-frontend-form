@@ -1,4 +1,5 @@
 interface Product {
+  id: string|number;
   name: string;
   description: string;
   subtitle: string;

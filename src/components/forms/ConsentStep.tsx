@@ -40,14 +40,18 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 		updateStepHighlight('sign');
 	}, []);
 
+	function handleFinish(){
+
+	}
+	
 	return (
 		<div className="space-y-20">
-			<div>
+			{/* <div>
 				<h2 className="text-center md:text-4xl text-2xl font-semibold text-Gray-100 uppercase">
 					order summary
 				</h2>
 				<OrderSummary />
-			</div>
+			</div> */}
 
 			<div>
 				<FormWrapper formTitle="Consent and Agreement">

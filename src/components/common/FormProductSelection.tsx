@@ -44,12 +44,15 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 	const errorMessage = lodash.get(errors, name);
 	const hasError = !!errors && errorMessage;
 	const selectedProducts = useFormStore((state) => state.selectedProducts);
+	const fields = useFormStore((state) => state.fields);
 	const updateSelectedProducts = useFormStore(
 		(state) => state.updateSelectedProducts,
 	);
 	const [products, setProducts] = useState<Product[]>([]);
 	const { formSession } = useContext(FormContext)!;
-	
+	const setField = useFormStore.getState().setField;
+	const setSelectedProducts = useFormStore.getState().setSelectedProducts;
+
 	const handleSelect = (product: Product) => {
 		updateSelectedProducts(product);
 	};
@@ -67,6 +70,24 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		list();
 	}, []);
 
+
+	useEffect(() => {
+		const pre_selected = (fields?.selected_products ?? []);
+		if (pre_selected.length == 0) return;
+		if (products.length == 0) return;
+		if((formSession?.payment?.success ?? false)){
+			return;
+		}
+		let list = []
+		products.forEach((p) => {
+			if (pre_selected.includes(p.id)) {
+				list.push(p);
+			}
+		});
+		console.log("Selected products", list);
+		setSelectedProducts(list);
+		setField("selected_products" , []);
+	}, [products]);
 
 
 	return (

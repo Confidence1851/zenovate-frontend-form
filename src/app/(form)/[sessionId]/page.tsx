@@ -25,7 +25,7 @@ import CheckoutBtn from '@/components/common/CheckoutBtn';
 import { Button } from '@/components/ui/button';
 import { formConditionalFields, formFields } from '@/utils/formFields';
 import { updateSession, getSession } from '@/server-actions/api.actions';
-import {  usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { FormContext } from '@/utils/contexts';
 
 const FormPage = () => {
@@ -115,7 +115,7 @@ const FormPage = () => {
 			return restartSession(url_id, true);
 		}
 		getSession(sessionId).then((v) => {
-		console.log(v);
+			console.log("Session", v);
 			if (v.success) {
 				setFormSession(v.data);
 				return;
@@ -149,31 +149,32 @@ const FormPage = () => {
 		return;
 	}
 
-	console.log(formSession);
+	let stepsList = [
+		<ProfileStep control={control} errors={errors} />,
+		<ContactInformationStep
+			control={control}
+			errors={errors}
+			setValue={setValue}
+		/>,
+		<ProductSelectionStep
+			control={control}
+			errors={errors}
+			setValue={setValue}
+		/>,
+		<PaymentStep />,
+		<AllergiesAndMedicationsStep control={control} errors={errors} />,
+		<MedicalHistoryStepOne control={control} errors={errors} />,
+		<MedicalHistoryStepTwo control={control} errors={errors} />,
+		<MedicalHistoryStepThree control={control} errors={errors} />,
+		<HealthUpdateStep control={control} errors={errors} />,
+		<AdditionalInformationStepOne control={control} errors={errors} />,
+		<AdditionalInformationStepTwo control={control} errors={errors} />,
+		<ConsentStep control={control} errors={errors} />,
+	];
+
 
 	const steps = useMemo(
-		() => [
-			<ProfileStep control={control} errors={errors} />,
-			<ContactInformationStep
-				control={control}
-				errors={errors}
-				setValue={setValue}
-			/>,
-			<ProductSelectionStep
-				control={control}
-				errors={errors}
-				setValue={setValue}
-			/>,
-			<PaymentStep />,
-			<AllergiesAndMedicationsStep control={control} errors={errors} />,
-			<MedicalHistoryStepOne control={control} errors={errors} />,
-			<MedicalHistoryStepTwo control={control} errors={errors} />,
-			<MedicalHistoryStepThree control={control} errors={errors} />,
-			<HealthUpdateStep control={control} errors={errors} />,
-			<AdditionalInformationStepOne control={control} errors={errors} />,
-			<AdditionalInformationStepTwo control={control} errors={errors} />,
-			<ConsentStep control={control} errors={errors} />,
-		],
+		() => stepsList,
 		[control, errors, setValue],
 	);
 
@@ -181,7 +182,7 @@ const FormPage = () => {
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
-		console.log("Form data" , formData)
+		console.log("Form data", formData)
 		//trigger stripe payment when it is on the payment stageF
 		formData['selectedProducts'] = selectedProducts;
 		const response = await updateSession({
@@ -190,22 +191,30 @@ const FormPage = () => {
 			formData: formData,
 		});
 		console.log("Update response", response);
-		if(!(response.success ?? false)){
+		if (!(response.success ?? false)) {
 			return;
+		}
+		if (stepHighlight === 'product' && response?.data?.paid) {
+			next();
+			return next();
 		}
 		if (stepHighlight === 'payment') {
 			if (response?.data?.redirect_url) {
-				return (window.location = response.data.redirect_url);
+				return window.location.href = response.data.redirect_url;
 			}
 			if (!response?.data?.paid) {
 				return;
 			}
 		}
 		if (stepHighlight === 'sign') {
+			setSessionId('');
 			setFormData({});
-			return restartSession("", false);
+			setSelectedProducts([]);
+			setCurrentStepIndex(0);
+			return window.location.href = response.data.redirect_url;
 		}
 		if (!isLastStep) return next();
+
 	};
 
 	return (
@@ -221,24 +230,21 @@ const FormPage = () => {
 					>
 						{step}
 						<div className="flex flex-col justify-end gap-4">
-							{stepHighlight === 'payment' && !paid ? (
-								<CheckoutBtn />
-							) : (
-								<Button
-									variant={'green'}
-									size={'lg'}
-									type="submit"
-									className="w-full flex justify-between items-center"
-								>
-									<span className="uppercase">
-										{isLastStep ? 'Finish & Exist Form' : 'Next'}
-									</span>
-									<ArrowRight
-										size="24"
-										className="text-secondary-foreground"
-									/>
-								</Button>
-							)}
+
+							<Button
+								variant={'green'}
+								size={'lg'}
+								type="submit"
+								className="w-full flex justify-between items-center"
+							>
+								<span className="uppercase">
+									{isLastStep ? 'Finish & Exist Form' : 'Next'}
+								</span>
+								<ArrowRight
+									size="24"
+									className="text-secondary-foreground"
+								/>
+							</Button>
 						</div>
 					</form>
 				</Form>
