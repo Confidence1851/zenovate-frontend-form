@@ -238,7 +238,7 @@ const FormPage = () => {
 								className="w-full flex justify-between items-center"
 							>
 								<span className="uppercase">
-									{isLastStep ? 'Finish & Exist Form' : 'Next'}
+									{isLastStep ? 'Submit' : 'Next'}
 								</span>
 								<ArrowRight
 									size="24"

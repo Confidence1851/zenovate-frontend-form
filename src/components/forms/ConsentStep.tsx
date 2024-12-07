@@ -20,8 +20,8 @@ import {
 type ConsentStepFormProps<TFormValues extends FieldValues = FieldValues> = {
 	control: Control<TFormValues>;
 	errors:
-		| Partial<DeepMap<TFormValues, FieldError>>
-		| FieldErrors<TFormValues>;
+	| Partial<DeepMap<TFormValues, FieldError>>
+	| FieldErrors<TFormValues>;
 };
 import { useFormStore } from '@/stores/formStore';
 import { Checkbox } from '../ui/checkbox';
@@ -40,10 +40,10 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 		updateStepHighlight('sign');
 	}, []);
 
-	function handleFinish(){
+	function handleFinish() {
 
 	}
-	
+
 	return (
 		<div className="space-y-20">
 			{/* <div>
@@ -57,17 +57,13 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 				<FormWrapper formTitle="Consent and Agreement">
 					<div className="flex flex-col gap-10">
 						<p className="text-justify text-base">
-							To ensure the best experience, we kindly ask you to
-							review and agree to our Terms of Service and Privacy
-							Policy. Your privacy is important to us, and we are
-							committed to handling your personal information
-							responsibly. By consenting, you allow us to collect
-							and use your data to provide our services, including
-							updates about medical products and personalized
-							recommendations. Please take the time to review the
-							full details of how we protect your information. By
-							continuing, you confirm your agreement with our
-							policies.
+							To ensure the best experience and comply with healthcare regulations, we kindly ask you to
+							review and agree to our <a href="/legal/terms-of-service" className="text-Blue-500 underline">Terms of Service</a> and
+							<a href="/legal/privacy-policy" className="text-Blue-500 underline">Privacy Policy</a>. Your privacy and safety are our top priorities.
+							By consenting, you authorize us to collect and process your personal and medical information to provide
+							healthcare services, including prescription medications, treatment recommendations, and relevant medical updates.
+							You acknowledge that all information provided will be reviewed by licensed healthcare providers and pharmacists
+							to determine appropriate treatment options.
 						</p>
 
 						<FormField
@@ -89,10 +85,11 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 												className="h-6 w-6 border border-primary"
 											/>
 											<FormLabel className="text-base uppercase text-Green-300 max-w-[600px] font-semibold">
-												I certify that the information
-												provided is true and accurate. I
-												agree to the terms and
-												conditions.
+												By checking this box, I certify that:
+												<br />
+												All information I have provided is true, complete, and accurate. I authorize Zenovate and its affiliated healthcare providers, pharmacies, and partner companies
+												in the United States and Canada to act as my healthcare providers and pharmacists. I consent to telehealth services and understand that if prescribed, my prescription will be
+												sent electronically to a licensed pharmacy. I have reviewed and agree to the Terms of Service and Privacy Policy. I understand that providing false or misleading information may result in denial of service and/or legal consequences.
 											</FormLabel>
 										</div>
 									</FormControl>
