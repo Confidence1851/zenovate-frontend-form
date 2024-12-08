@@ -28,6 +28,7 @@ import { updateSession, getSession } from '@/server-actions/api.actions';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { FormContext } from '@/utils/contexts';
 
+
 const FormPage = () => {
 	const pathname = usePathname();
 	const searchParams = useSearchParams();
@@ -238,7 +239,7 @@ const FormPage = () => {
 								className="w-full flex justify-between items-center"
 							>
 								<span className="uppercase">
-									{isLastStep ? 'Finish & Exist Form' : 'Next'}
+									{isLastStep ? 'Submit' : 'Next'}
 								</span>
 								<ArrowRight
 									size="24"
