@@ -75,10 +75,11 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		const pre_selected = (fields?.selected_products ?? []);
 		if (pre_selected.length == 0) return;
 		if (products.length == 0) return;
-		if((formSession?.payment?.success ?? false)){
+		if ((formSession?.payment?.success ?? false)) {
 			return;
 		}
-		let list = []
+		let list: Product[] = [];
+
 		products.forEach((p) => {
 			if (pre_selected.includes(p.id)) {
 				list.push(p);
@@ -86,7 +87,7 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		});
 		console.log("Selected products", list);
 		setSelectedProducts(list);
-		setField("selected_products" , []);
+		setField("selected_products", []);
 	}, [products]);
 
 

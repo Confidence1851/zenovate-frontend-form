@@ -1,4 +1,5 @@
 'use client';
+
 import { decodeRedirectHash } from '@/utils/functions';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from "react";
@@ -20,7 +21,9 @@ const RedirectPage = () => {
     }, []);
 
     function handle() {
-        const data = decodeRedirectHash(params?.hash ?? "");
+        const hashValue = Array.isArray(params?.hash) ? params.hash[0] : params?.hash;
+        const data = decodeRedirectHash(hashValue ?? "");
+
         if (data) {
             setField(data.key, data.value);
 
@@ -30,7 +33,7 @@ const RedirectPage = () => {
                         setCurrentStepIndex(2);
                         updateStepHighlight("product");
                         return router.push("/" + sessionId);
-                    }else{
+                    } else {
                         setCurrentStepIndex(0);
                         updateStepHighlight("info");
                         return router.push("/" + sessionId);
