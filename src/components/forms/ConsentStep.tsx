@@ -20,18 +20,19 @@ import {
 type ConsentStepFormProps<TFormValues extends FieldValues = FieldValues> = {
 	control: Control<TFormValues>;
 	errors:
-		| Partial<DeepMap<TFormValues, FieldError>>
-		| FieldErrors<TFormValues>;
+	| Partial<DeepMap<TFormValues, FieldError>>
+	| FieldErrors<TFormValues>;
 };
 import { useFormStore } from '@/stores/formStore';
 import { Checkbox } from '../ui/checkbox';
 import { useEffect } from 'react';
-import OrderSummary from '../common/OrderSummary';
 
 const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 	const updateFormData = useFormStore((state) => state.updateFormData);
-	const errorMessage = lodash.get(errors, 'consentAgreement');
-	const hasError = !!errors && errorMessage;
+	const error1 = lodash.get(errors, 'consentAgreement');
+	const error2 = lodash.get(errors, 'consentSharing');
+	const hasError1 = !!errors && error1;
+	const hasError2 = !!errors && error2;
 	const updateStepHighlight = useFormStore(
 		(state) => state.updateStepHighlight,
 	);
@@ -40,10 +41,10 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 		updateStepHighlight('sign');
 	}, []);
 
-	function handleFinish(){
+	function handleFinish() {
 
 	}
-	
+
 	return (
 		<div className="space-y-20">
 			{/* <div>
@@ -87,6 +88,7 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 													);
 												}}
 												className="h-6 w-6 border border-primary"
+												style={{ marginTop: "7px" }}
 											/>
 											<FormLabel className="text-base uppercase text-Green-300 max-w-[600px] font-semibold">
 												I certify that the information
@@ -97,9 +99,43 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 										</div>
 									</FormControl>
 
-									{hasError && (
+									{hasError1 && (
 										<FormMessage className="error_tag">
-											{errorMessage.message}
+											{error1.message}
+										</FormMessage>
+									)}
+								</FormItem>
+							)}
+						/>
+						<FormField
+							control={control}
+							name="consentSharing"
+							render={({ field }) => (
+								<FormItem className="">
+									<FormControl>
+										<div className=" flex gap-2">
+											<Checkbox
+												checked={field.value}
+												onCheckedChange={(checked) => {
+													field.onChange(checked);
+													updateFormData(
+														'consentSharing',
+														checked,
+													);
+												}}
+												className="h-6 w-6 border border-primary"
+												style={{ marginTop: "7px" }}
+											/>
+											<FormLabel className="text-base uppercase text-Green-300 max-w-[600px] font-semibold">
+												I agree that my information be shared with
+												<a href="#" className='mx-1' target="_blank" rel="noopener noreferrer">SkyCare</a>, Zenovate`s Medical Partner.
+											</FormLabel>
+										</div>
+									</FormControl>
+
+									{hasError2 && (
+										<FormMessage className="error_tag">
+											{error2.message}
 										</FormMessage>
 									)}
 								</FormItem>

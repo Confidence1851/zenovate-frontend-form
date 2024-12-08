@@ -21,7 +21,7 @@ interface SliderProps {
 const TooltipSlider: React.FC<SliderProps> = ({ stepData }) => {
 
 	React.useEffect(() => {
-		console.log('Client:', document.querySelector('button'));
+		// console.log('Client:', document.querySelector('button'));
 	}, []);
 
 

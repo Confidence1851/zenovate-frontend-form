@@ -110,12 +110,12 @@ const FormPage = () => {
 
 	function validateSession() {
 		const url_id = pathname.replace('/', '');
-		console.log(url_id, sessionId);
+		// console.log(url_id, sessionId);
 		if (url_id != sessionId) {
 			return restartSession(url_id, true);
 		}
 		getSession(sessionId).then((v) => {
-			console.log("Session", v);
+			// console.log("Session", v);
 			if (v.success) {
 				setFormSession(v.data);
 				return;
@@ -130,7 +130,7 @@ const FormPage = () => {
 			const v = await getSession(id);
 			if (v.success) {
 				const session = v.data;
-				console.log(session);
+				// console.log(session);
 				setFormSession(session);
 				setSessionId(session?.id ?? '');
 				setFormData(session?.formData ?? {});
@@ -139,7 +139,7 @@ const FormPage = () => {
 				return;
 			}
 		}
-		console.log("Redirecting back");
+		// console.log("Redirecting back");
 
 		setSessionId('');
 		// setFormData({});
@@ -182,7 +182,7 @@ const FormPage = () => {
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
-		console.log("Form data", formData)
+		// console.log("Form data", formData)
 		//trigger stripe payment when it is on the payment stageF
 		formData['selectedProducts'] = selectedProducts;
 		const response = await updateSession({

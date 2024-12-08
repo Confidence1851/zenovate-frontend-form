@@ -133,7 +133,7 @@ const HomeComponent = () => {
 				setSessionId(session.data.id);
 				setFormSessionId(session.data.id);
 			} catch (error) {
-				console.error('Error in starting session:', error);
+				// console.error('Error in starting session:', error);
 			}
 		};
 

@@ -30,7 +30,6 @@ const SignInForm = () => {
     formState: { errors },
   } = form;
   const onSubmit = async () => {
-    console.log("submitted");
   };
   return (
     <div>

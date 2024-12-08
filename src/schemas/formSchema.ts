@@ -167,7 +167,7 @@ export const formValidationSchema = [
       })
       .refine((val) => {
         const country = val.trim();
-        return ["United States" , "Canada"].includes(country)
+        return ["United States", "Canada"].includes(country)
       }, "We only accept orders from United States and Canada at the moment.")
   }),
   // Product selection
@@ -242,5 +242,11 @@ export const formValidationSchema = [
       .refine((data) => data === true, {
         message: "You must agree to the consent",
       }),
-  }),
+    consentSharing: z
+      .boolean({ required_error: "You must agree to the consent"})
+      .refine((data) => data === true, {
+        message: "You must agree to the consent",
+      }),
+  })
+
 ];

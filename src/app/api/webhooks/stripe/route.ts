@@ -23,20 +23,20 @@ export async function POST(req: NextRequest) {
 
     // @ts-ignore
     const response = JSON.parse(event);
-    console.log(`🔔  event data: `, response.data);
-    console.log(`🔔  event type:`, response.type);
-    console.log(`🔔  event received: `, event);
-    console.log(`🔔  event type : `, typeof event);
+    // console.log(`🔔  event data: `, response.data);
+    // console.log(`🔔  event type:`, response.type);
+    // console.log(`🔔  event received: `, event);
+    // console.log(`🔔  event type : `, typeof event);
     const session = response.data.object;
-    console.log("session type:", session);
+    // console.log("session type:", session);
 
     const eventType = event.type;
-    console.log("Event type:", eventType);
+    // console.log("Event type:", eventType);
     // Process the event (e.g., handle payment events, etc.)
 
     return NextResponse.json({ message: "Webhook received" });
   } catch (err: any) {
-    console.error(`❌ Webhook Error: ${err.message}`);
+    // console.error(`❌ Webhook Error: ${err.message}`);
 
     // Respond with error status if webhook signature verification fails
     return new Response(`Webhook Error: ${err.message}`, { status: 400 });

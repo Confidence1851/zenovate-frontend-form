@@ -35,4 +35,5 @@ export const formFields = [
   "familyMedicalHistory",
   "additionalInfo",
   "consentAgreement",
+  "consentSharing"
 ];
