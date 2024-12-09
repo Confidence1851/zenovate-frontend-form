@@ -20,7 +20,9 @@ const RedirectPage = () => {
     }, []);
 
     function handle() {
-        const data = decodeRedirectHash(params?.hash ?? "");
+        const data = decodeRedirectHash(
+            Array.isArray(params?.hash) ? params.hash[0] : params?.hash ?? ""
+          );
         if (data) {
             setField(data.key, data.value);
 

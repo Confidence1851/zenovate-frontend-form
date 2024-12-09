@@ -121,7 +121,7 @@ const FormPage = () => {
 	}, [sessionId, pathname]);
 
 	function validateSession() {
-		const url_id = pathname.replace('/', '');
+		const url_id = (pathname ?? '').replace('/', '');
 		// console.log(url_id, sessionId);
 		if (url_id != sessionId) {
 			return restartSession(url_id, true);
