@@ -1,4 +1,5 @@
 'use client';
+
 import { decodeRedirectHash } from '@/utils/functions';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from "react";
@@ -32,7 +33,7 @@ const RedirectPage = () => {
                         setCurrentStepIndex(2);
                         updateStepHighlight("product");
                         return router.push("/" + sessionId);
-                    }else{
+                    } else {
                         setCurrentStepIndex(0);
                         updateStepHighlight("info");
                         return router.push("/" + sessionId);
