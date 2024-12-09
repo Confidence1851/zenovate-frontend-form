@@ -21,7 +21,6 @@ import AdditionalInformationStepOne from '@/components/forms/AdditionalInformati
 import AdditionalInformationStepTwo from '@/components/forms/AdditionalInformation-StepTwo';
 import ConsentStep from '@/components/forms/ConsentStep';
 import PaymentStep from '@/components/forms/PaymentStep';
-import CheckoutBtn from '@/components/common/CheckoutBtn';
 import { Button } from '@/components/ui/button';
 import { formConditionalFields, formFields } from '@/utils/formFields';
 import { updateSession, getSession } from '@/server-actions/api.actions';
@@ -31,19 +30,18 @@ import { FormContext } from '@/utils/contexts';
 
 const FormPage = () => {
 	const pathname = usePathname();
-	const searchParams = useSearchParams();
 	const stat_ = useFormStore((state) => state);
 	const formData = useFormStore((state) => state.formData);
+	const updateFormData = useFormStore((state) => state.updateFormData);
 	const currentStepIndex = useFormStore((state) => state.currentStepIndex);
-	const totalPrice = useFormStore((state) => state.totalPrice);
 	const sessionId = useFormStore((state) => state.sessionId);
-	const paid = useFormStore((state) => state.paid);
 	const selectedProducts = useFormStore((state) => state.selectedProducts);
 	const setSessionId = useFormStore.getState().setSessionId;
 	const setFormData = useFormStore.getState().setFormData;
-	const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
+	const resetState = useFormStore.getState().resetState;
 	const setSelectedProducts = useFormStore.getState().setSelectedProducts;
 	const [formSession, setFormSession] = useState<any | null | undefined>(undefined);
+	const [isComplete, setIsComplete] = useState<any | null | undefined>(undefined);
 
 	const hasHydrated = useFormStore.persist.hasHydrated();
 	const form = useForm({
@@ -58,6 +56,18 @@ const FormPage = () => {
 		watch,
 		formState: { errors },
 	} = form;
+
+	//  watch if street value changes and update related fields
+	const street = watch('streetAddress');
+
+	useEffect(() => {
+		updateFormData('streetAddress', street);
+		setValue('postalZipCode', formData['postalZipCode']);
+		setValue('city', formData['city']);
+		setValue('stateProvince', formData['stateProvince']);
+		setValue('country', formData['country']);
+	}, [street]);
+
 
 	useEffect(() => {
 		//on hydration, update from fields from data stored in localstorage
@@ -95,18 +105,19 @@ const FormPage = () => {
 		}
 	}, [hasHydrated]);
 
-	//  watch if street value changes and update related fields
-	const street = watch('streetAddress');
+	useEffect(() => {
+		if (isComplete != undefined) {
+			resetState()
+			resetState()
+			window.location.href = isComplete.redirect_url;
+		}
+
+	}, [isComplete]);
 
 	useEffect(() => {
-		setValue('postalZipCode', formData['postalZipCode']);
-		setValue('city', formData['city']);
-		setValue('stateProvince', formData['stateProvince']);
-		setValue('country', formData['country']);
-	}, [street]);
-
-	useEffect(() => {
-		validateSession();
+		if (isComplete == undefined) {
+			validateSession();
+		}
 	}, [sessionId, pathname]);
 
 	function validateSession() {
@@ -140,12 +151,8 @@ const FormPage = () => {
 				return;
 			}
 		}
-		// console.log("Redirecting back");
 
-		setSessionId('');
-		// setFormData({});
-		setSelectedProducts([]);
-		setCurrentStepIndex(0);
+		resetState()
 		window.location.href = '/';
 		return;
 	}
@@ -183,6 +190,8 @@ const FormPage = () => {
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
+		setIsComplete(undefined);
+
 		// console.log("Form data", formData)
 		//trigger stripe payment when it is on the payment stageF
 		formData['selectedProducts'] = selectedProducts;
@@ -208,11 +217,8 @@ const FormPage = () => {
 			}
 		}
 		if (stepHighlight === 'sign') {
-			setSessionId('');
-			setFormData({});
-			setSelectedProducts([]);
-			setCurrentStepIndex(0);
-			return window.location.href = response.data.redirect_url;
+			setIsComplete(response.data);
+			return
 		}
 		if (!isLastStep) return next();
 

@@ -128,6 +128,11 @@ const FormStreetAddress = <TFormValues extends Record<string, unknown>>({
 							'address_components',
 							'formatted_address',
 						]);
+
+						// Restrict to Canada and USA
+						autocomplete.setComponentRestrictions({
+							country: ['ca', 'us'], // Country codes for Canada and the USA
+						});
 					}}
 					onPlaceChanged={handlePlaceChange}
 				>

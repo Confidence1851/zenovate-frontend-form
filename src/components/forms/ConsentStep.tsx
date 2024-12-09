@@ -90,8 +90,7 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 												By checking this box, I certify that:
 												<br />
 												All information I have provided is true, complete, and accurate. I authorize Zenovate and its affiliated healthcare providers, pharmacies, and partner companies
-												in the United States and Canada to act as my healthcare providers and pharmacists. I consent to telehealth services and understand that if prescribed, my prescription will be
-												sent electronically to a licensed pharmacy. I have reviewed and agree to the Terms of Service and Privacy Policy. I understand that providing false or misleading information may result in denial of service and/or legal consequences.
+												in the United States and Canada to act as my healthcare providers and pharmacists.
 											</FormLabel>
 										</div>
 									</FormControl>
@@ -124,8 +123,8 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 												style={{ marginTop: "7px" }}
 											/>
 											<FormLabel className="text-base uppercase text-Green-300 max-w-[600px] font-semibold">
-												I agree that my information be shared with
-												<a href="#" className='mx-1' target="_blank" rel="noopener noreferrer">SkyCare</a>, Zenovate`s Medical Partner.
+											I consent to telehealth services and understand that if prescribed, my prescription will be
+											sent electronically to a licensed pharmacy. I have reviewed and agree to the Terms of Service and Privacy Policy. I understand that providing false or misleading information may result in denial of service and/or legal consequences.
 											</FormLabel>
 										</div>
 									</FormControl>

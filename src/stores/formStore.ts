@@ -23,7 +23,10 @@ interface FormActions {
 	updateSelectedProducts: (product: Product) => void;
 	updateStepHighlight: (step: Highlights) => void;
 	updatePaid: () => void;
+	resetState: () => void;
 }
+
+
 
 const useFormStore = create(
 	persist<FormState & FormActions>(
@@ -35,7 +38,7 @@ const useFormStore = create(
 			totalPrice: 0,
 			selectedProducts: [],
 			stepHighlight: 'info',
-			paid: true,
+			paid: false,
 			updatePaid: () => set({ paid: true }),
 			updateStepHighlight: (step: Highlights) =>
 				set({ stepHighlight: step }),
@@ -90,6 +93,18 @@ const useFormStore = create(
 				set(() => ({ currentStepIndex: index })),
 			setSessionId: (id: string) =>
 				set(() => ({ sessionId: id })),
+			resetState: () => {
+				set(() => ({
+					fields: {},
+					formData: {},
+					currentStepIndex: 0,
+					sessionId: '',
+					totalPrice: 0,
+					selectedProducts: [],
+					stepHighlight: 'info',
+					paid: false
+				}))
+			}
 		}),
 
 		{

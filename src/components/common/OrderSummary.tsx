@@ -20,8 +20,8 @@ const OrderSummary = () => {
 	return (
 		<div className="space-y-10">
 			<div className="flex flex-col gap-4">
-				{checkoutData?.products && checkoutData?.products?.map((prod) => (
-					<>
+				{checkoutData?.products && checkoutData?.products?.map((prod , i) => (
+					<div key={i}>
 						<div className="flex justify-between items-start">
 							<div className="flex flex-col gap-2">
 								<h3 className="uppercase font-medium text-base md:text-lg">
@@ -36,7 +36,7 @@ const OrderSummary = () => {
 							</p>
 						</div>
 						<div className="w-full h-[1px] bg-Gray-100" />
-					</>
+					</div>
 				))}
 			</div>
 
