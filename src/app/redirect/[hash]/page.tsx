@@ -1,9 +1,10 @@
 'use client';
 
-import { decodeRedirectHash } from '@/utils/functions';
+import { decodeRedirectHash, getGeoInfo } from '@/utils/functions';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from "react";
 import { useFormStore } from '@/stores/formStore';
+import { recreateSession } from '@/server-actions/api.actions';
 
 const RedirectPage = () => {
     const params = useParams();
@@ -15,15 +16,17 @@ const RedirectPage = () => {
     const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
     const updateStepHighlight = useFormStore.getState().updateStepHighlight;
 
+    const setSessionId = useFormStore.getState().setSessionId;
+
 
     useEffect(() => {
         handle();
     }, []);
 
-    function handle() {
+    async function handle() {
         const data = decodeRedirectHash(
             Array.isArray(params?.hash) ? params.hash[0] : params?.hash ?? ""
-          );
+        );
         if (data) {
             setField(data.key, data.value);
 
@@ -46,6 +49,20 @@ const RedirectPage = () => {
                 setCurrentStepIndex(2);
                 updateStepHighlight("product");
                 return router.push("/" + data.value);
+            }
+
+            if (data.key == "recreate_session") {
+                setField(data.key, "");
+
+                let response = await recreateSession(data.value.id,
+                    data.value.token
+                    , await getGeoInfo());
+                if (response.success) {
+                    setCurrentStepIndex(0);
+                    updateStepHighlight("info");
+                    setSessionId('');
+                    return router.push("/" + response.data.id);
+                }
             }
         }
         return router.push("/");

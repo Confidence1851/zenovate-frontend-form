@@ -22,6 +22,7 @@ const TooltipSlider = dynamic(() => import('../home-page/TooltipSlider'), { ssr:
 import useScreenWidth from '@/hooks/useScreenWidth';
 import { useFormStore } from '@/stores/formStore';
 import { startSession } from '@/server-actions/api.actions';
+import { getGeoInfo } from '@/utils/functions';
 
 const HomeComponent = () => {
 	const [current, setCurrent] = useState(0);
@@ -74,61 +75,10 @@ const HomeComponent = () => {
 	useEffect(() => {
 		const start = async () => {
 			try {
-				// 1. Get User Agent data
-				const userAgent = navigator.userAgent;
-
-				// 2. Get Geolocation data (async)
-				const getLocation = () => {
-					return new Promise((resolve) => {
-						// Check if geolocation is supported
-						if (!navigator.geolocation) {
-							console.warn(
-								'Geolocation is not supported by this browser.',
-							);
-							resolve(null);
-						}
-						navigator.geolocation.getCurrentPosition(
-							(position) =>
-								resolve({
-									latitude: position.coords.latitude,
-									longitude: position.coords.longitude,
-								}),
-							(error) => {
-								console.warn(
-									'Error getting geolocation:',
-									error.message,
-								);
-								resolve(null); // Proceed even if permission is denied or other error
-							},
-						);
-					});
-				};
-
-				// Check geolocation permission using Permissions API
-				const permissionStatus = await navigator.permissions.query({
-					name: 'geolocation',
-				});
-
-				let locationData = null;
-
-				if (permissionStatus.state === 'granted') {
-					locationData = await getLocation();
-				} else if (permissionStatus.state === 'prompt') {
-					locationData = await getLocation(); // Request location if not yet granted or denied
-				} else {
-					console.warn(
-						'Geolocation permission was denied. Proceeding without location.',
-					);
-				}
-
-				// 3. Combine data to send to API
-				const postData = {
-					userAgent,
-					location: locationData,
-				};
+				
 
 				// 4. Send the data to API
-				const session = await startSession(postData);
+				const session = await startSession(await getGeoInfo());
 				console.log(session);
 				setSessionId(session.data.id);
 				setFormSessionId(session.data.id);
