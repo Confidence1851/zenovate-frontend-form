@@ -176,6 +176,27 @@ export const formValidationSchema = [
       .array(z.any())
       .min(1, { message: "Select at least a product" }),
   }),
+  // Product price selection
+  // z.object({
+  //   selectedProductPrices: z
+  //     .array(
+  //       z.object({
+  //         product_id: z.string().min(1, { message: "Kindly select a price" }),
+  //         price_id: z.string().min(1, { message: "Kindly select a price" }),
+  //       })
+  //     )
+  //     .min(1, { message: "Select at least a product" }),
+  // }),  
+  z.object({
+    selectedProductPrices: z
+      .array(z.any())
+      .min(1, { message: "Select at least one product" })
+      .refine(
+        (items) => items.every((item) => item.product_id && item.price_id),
+         "Kindly select a price for each product",
+      )
+  }),
+
   //Payment
   z.object({
     isPaid: z.boolean().optional(),

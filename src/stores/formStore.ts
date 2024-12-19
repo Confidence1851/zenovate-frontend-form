@@ -6,21 +6,20 @@ interface FormState {
 	fields: Record<string, any>;
 	currentStepIndex: number;
 	sessionId: string;
-	totalPrice: number;
-	selectedProducts: Product[];
+	selectedProducts: SelectedProduct[];
 	stepHighlight: Highlights;
 	paid: boolean;
 }
 interface FormActions {
 	setField: (field: string, value: any) => void;
 	updateFormData: (field: string, value: any) => void;
-	setSelectedProducts: (data: Product[]) => void;
+	setSelectedProducts: (data: SelectedProduct[]) => void;
 	setFormData: (data: Record<string, any>) => void;
 	setSessionId: (id: string) => void;
 	gotoNextStep: () => void;
 	gotoPrevStep: () => void;
 	setCurrentStepIndex: (index: number) => void;
-	updateSelectedProducts: (product: Product) => void;
+	updateSelectedProducts: (product: SelectedProduct) => void;
 	updateStepHighlight: (step: Highlights) => void;
 	updatePaid: () => void;
 	resetState: () => void;
@@ -35,7 +34,6 @@ const useFormStore = create(
 			formData: {},
 			currentStepIndex: 0,
 			sessionId: '',
-			totalPrice: 0,
 			selectedProducts: [],
 			stepHighlight: 'info',
 			paid: false,
@@ -44,24 +42,36 @@ const useFormStore = create(
 				set({ stepHighlight: step }),
 			updateSelectedProducts: (product) => {
 				set((state) => {
-					const check = state.selectedProducts.find(
-						(item) => item === product,
-					);
-					const updatedProducts = check
-						? state.selectedProducts.filter(
-							(item) =>
-								item.name.toLowerCase() !==
-								product.name.toLowerCase(),
-						)
-						: [...state.selectedProducts, product];
+					let selectedIndex = undefined;
 
-					const updatedPrice = check
-						? state.totalPrice - product.price
-						: state.totalPrice + product.price;
+					// Check if the product exists in the array
+					state.selectedProducts.filter((selected, i) => {
+						if (selected.product_id === product.product_id) {
+							selectedIndex = i; 
+							return true;
+						}
+						return false;
+					});
 
+					// Remove the product if it exists, or add it if it doesn't
+					if (selectedIndex !== undefined) {
+						// Remove the product
+						if (product.price_id === undefined) {
+							// Remove the product if price_id is undefined
+							state.selectedProducts.splice(selectedIndex, 1);
+						} else {
+							// Update the product with the new price_id
+							state.selectedProducts[selectedIndex] = {
+								...state.selectedProducts[selectedIndex],
+								price_id: product.price_id,
+							};
+						}
+					} else {
+						// Add the product
+						state.selectedProducts.push(product);
+					}
 					return {
-						selectedProducts: updatedProducts,
-						totalPrice: updatedPrice,
+						selectedProducts: state.selectedProducts,
 					};
 				});
 			},
@@ -99,7 +109,6 @@ const useFormStore = create(
 					formData: {},
 					currentStepIndex: 0,
 					sessionId: '',
-					totalPrice: 0,
 					selectedProducts: [],
 					stepHighlight: 'info',
 					paid: false

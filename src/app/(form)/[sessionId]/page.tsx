@@ -26,6 +26,7 @@ import { formConditionalFields, formFields } from '@/utils/formFields';
 import { updateSession, getSession } from '@/server-actions/api.actions';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { FormContext } from '@/utils/contexts';
+import ProductPricingSelectionStep from '@/components/forms/ProductPricingSelectionStep';
 
 
 const FormPage = () => {
@@ -169,6 +170,11 @@ const FormPage = () => {
 			errors={errors}
 			setValue={setValue}
 		/>,
+		<ProductPricingSelectionStep
+			control={control}
+			errors={errors}
+			setValue={setValue}
+		/>,
 		<PaymentStep />,
 		<AllergiesAndMedicationsStep control={control} errors={errors} />,
 		<MedicalHistoryStepOne control={control} errors={errors} />,
@@ -195,6 +201,9 @@ const FormPage = () => {
 		// console.log("Form data", formData)
 		//trigger stripe payment when it is on the payment stageF
 		formData['selectedProducts'] = selectedProducts;
+
+		console.log(formData);
+		
 		const response = await updateSession({
 			sessionId: sessionId,
 			step: stepHighlight,
@@ -206,12 +215,14 @@ const FormPage = () => {
 		}
 		if (stepHighlight === 'product' && response?.data?.paid) {
 			next();
+			next();
 			return next();
 		}
 		if (stepHighlight === 'payment') {
 			if (response?.data?.redirect_url) {
 				return window.location.href = response.data.redirect_url;
 			}
+
 			if (!response?.data?.paid) {
 				return;
 			}

@@ -1,14 +1,30 @@
 interface Product {
-  id: string|number;
+  id: string | number;
   name: string;
   description: string;
   subtitle: string;
-  price: number;
+  nav_description: string;
+  price: ProductPrice[];
+  selected_price?: ProductPrice;
 }
+
+interface ProductPrice {
+  id?: string;
+  frequency: number;
+  unit: string;
+  value: number;
+  currency: string;
+}
+
+interface SelectedProduct {
+  product_id: string | number;
+  price_id?: string | number;
+}
+
 
 interface Checkout {
   shipping_fee: number;
-  products: Poduct[];
+  products: Product[];
   sub_total: number;
   total: number;
 }

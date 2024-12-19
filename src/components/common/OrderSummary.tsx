@@ -28,11 +28,11 @@ const OrderSummary = () => {
 									{prod.name}
 								</h3>
 								<p className="text-Gray-100 text-sm md:text-base">
-									{prod.description}
+									{prod.nav_description}
 								</p>
 							</div>
 							<p className="text-base md:text-lg font-semibold">
-								${prod.price}
+								${prod.price[0].value}
 							</p>
 						</div>
 						<div className="w-full h-[1px] bg-Gray-100" />

@@ -1,8 +1,7 @@
 'use client';
-
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/** @ts-ignore */
+// @ts-ignore
 
 import * as lodash from 'lodash';
 import {
@@ -19,12 +18,10 @@ import { FormField, FormItem, FormMessage } from '../ui/form';
 import { useEffect, useState, useContext } from 'react';
 import { InputProps } from '../ui/input';
 import { useFormStore } from '@/stores/formStore';
-import { Button } from '../ui/button';
-import { ArrowRight } from 'lucide-react';
 import { productList } from '@/server-actions/api.actions';
 import { FormContext } from "@/utils/contexts";
 
-type FormProductSelectionProps<TFormValues extends FieldValues = FieldValues> =
+type FormProductPriceSelectionProps<TFormValues extends FieldValues = FieldValues> =
 	{
 		control: Control<TFormValues>;
 		name: Path<TFormValues>;
@@ -37,17 +34,16 @@ type FormProductSelectionProps<TFormValues extends FieldValues = FieldValues> =
 		setValue: UseFormSetValue<FieldValues>;
 	} & Omit<InputProps, 'name'>;
 
-const FormProductSelection = <TFormValues extends Record<string, unknown>>({
+const FormProductPriceSelection = <TFormValues extends Record<string, unknown>>({
 	control,
 	name,
 	errors,
 	setValue,
-}: FormProductSelectionProps<TFormValues>): JSX.Element => {
+}: FormProductPriceSelectionProps<TFormValues>): JSX.Element => {
 	const errorMessage = lodash.get(errors, name);
 	const hasError = !!errors && errorMessage;
 	const selectedProducts = useFormStore((state) => state.selectedProducts);
 	const fields = useFormStore((state) => state.fields);
-	const state = useFormStore((state) => state);
 	const updateSelectedProducts = useFormStore(
 		(state) => state.updateSelectedProducts,
 	);
@@ -55,16 +51,7 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 	const { formSession } = useContext(FormContext)!;
 	const setField = useFormStore.getState().setField;
 	const setSelectedProducts = useFormStore.getState().setSelectedProducts;
-
-
-	const handleSelect = (product: Product) => {
-		let item = { product_id: product.id } as SelectedProduct;
-		updateSelectedProducts(item);
-	};
-
-	useEffect(() => {
-		setValue('selectedProducts', selectedProducts);
-	}, [state]);
+	const state = useFormStore((state) => state);
 
 	useEffect(() => {
 		function list() {
@@ -74,7 +61,6 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		}
 		list();
 	}, []);
-
 
 	useEffect(() => {
 		const pre_selected = (fields?.selected_products ?? []);
@@ -98,6 +84,29 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 		setField("selected_products", []);
 	}, [products]);
 
+	function isProductSelected(product: Product): boolean {
+		return selectedProducts.some((selected: SelectedProduct) => 
+			selected.product_id === product.id
+		);
+	}
+
+	function isSelected(product: Product, price: ProductPrice): boolean {
+		return selectedProducts.some((selected: SelectedProduct) => 
+			selected.product_id === product.id && selected.price_id === price.id
+		);
+	}
+	
+	useEffect(() => {
+		setValue('selectedProductPrices', selectedProducts);
+	}, [state]);
+
+	const handleSelect = (product: Product , price: ProductPrice) => {
+		let item = {
+			product_id: product.id,
+			price_id: price.id
+		} as SelectedProduct;
+		updateSelectedProducts(item);
+	};
 
 
 	return (
@@ -112,9 +121,9 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 						</div>
 					) : <div className='pt-4'></div>}
 					<div className="relative flex min-w-0 flex-grow gap-8 overflow-x-scroll py-8 mt-6 custom-scrollbar items-stretch justify-stretch">
-						{products.map((item) => (
+						{products.map((item) => isProductSelected(item) ? (
 							<div
-								className=" gap-4 h-80 w-[300px] p-8 flex flex-col justify-between border border-Black-100 flex-shrink-0"
+								className=" gap-4 w-[300px] p-8 flex flex-col justify-between border border-Black-100 flex-shrink-0"
 								key={item.name}
 							>
 								<div className="space-y-10">
@@ -122,53 +131,31 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 										<h3 className="text-lg font-semibold text-Black-100 uppercase">
 											{item.name}
 										</h3>
-										<h4 className="text-base text-Gray-100 uppercase">
-											{item.subtitle}
-										</h4>
 									</div>
-									<p className="text-base text-Gray-100">
-										{item.nav_description}
-									</p>
-								</div>
-
-								<div className="flex justify-between items-center">
-									<Button
-										disabled={(formSession?.payment?.success ?? true)}
-										type="button"
-										variant={'green'}
-										className={`${selectedProducts.some(
-											(selectedItem) =>
-												selectedItem.product_id ===
-												item.id,
-										)
-											? ''
-											: 'bg-transparent border border-Black-100 text-my_dark'
-											}    flex justify-between items-center uppercase  h-11`}
-										onClick={() => {
-											// If the use has already paid for this session, prevent them from changing selection
-											if ((formSession?.payment?.success ?? true)) {
-												return;
-											}
-											handleSelect(item);
-										}}
-									>
-										<span>
-											{selectedProducts.some(
-												(selectedItem) =>
-													selectedItem.product_id ===
-													item.id,
-											)
-												? 'Selected'
-												: 'Select'}
-										</span>
-										<ArrowRight size={16} />
-									</Button>
-									<span className="text-base font-semibold text-Green-100">
-										{/* ${item.price[0].value} */}
-									</span>
+									<div className="text-base text-Gray-100 h-100">
+										{item.price.map((price) => (
+											<div
+												key={price.id}
+												className={`${
+													isSelected(item , price)
+													? 'bg-Green-100 text-white'
+													: 'bg-transparent border border-Black-100 text-my_dark'
+													}  flex justify-between items-center border p-4 mb-2 rounded cursor-pointer uppercase  h-20`}
+												onClick={() => {
+													handleSelect(item , price);
+												}}
+											>
+												<div>
+													<h3 className="font-semibold">Title</h3>
+													<p className="text-sm text-white-500">Subtitle</p>
+												</div>
+												<span className="text-sm font-medium">{price.currency}{price.value} / {price.unit.toUpperCase()}</span>
+											</div>
+										))}
+									</div>
 								</div>
 							</div>
-						))}
+						) : <></>)}
 					</div>
 					{hasError && (
 						<FormMessage className="error_tag">
@@ -181,4 +168,4 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 	);
 };
 
-export default FormProductSelection;
+export default FormProductPriceSelection;
