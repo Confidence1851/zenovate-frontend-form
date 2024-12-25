@@ -9,7 +9,7 @@ import { useFormStore } from '@/stores/formStore';
 import ProfileStep from '@/components/forms/ProfileStep';
 import { Form } from '@/components/ui/form';
 import ContactInformationStep from '@/components/forms/ContactInformationStep';
-import { ArrowRight } from 'iconsax-react';
+import { ArrowLeft, ArrowRight } from 'iconsax-react';
 import FormProgressBar from '@/components/common/FormProgressBar';
 import ProductSelectionStep from '@/components/forms/ProductSelectionStep';
 import AllergiesAndMedicationsStep from '@/components/forms/AllergiesAndMedicationsStep';
@@ -28,6 +28,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { FormContext } from '@/utils/contexts';
 import ProductPricingSelectionStep from '@/components/forms/ProductPricingSelectionStep';
 
+import CircularProgressBar from '@/components/forms/CircularProgressBar';
 
 const FormPage = () => {
 	const pathname = usePathname();
@@ -41,8 +42,12 @@ const FormPage = () => {
 	const setFormData = useFormStore.getState().setFormData;
 	const resetState = useFormStore.getState().resetState;
 	const setSelectedProducts = useFormStore.getState().setSelectedProducts;
-	const [formSession, setFormSession] = useState<any | null | undefined>(undefined);
-	const [isComplete, setIsComplete] = useState<any | null | undefined>(undefined);
+	const [formSession, setFormSession] = useState<any | null | undefined>(
+		undefined,
+	);
+	const [isComplete, setIsComplete] = useState<any | null | undefined>(
+		undefined,
+	);
 
 	const hasHydrated = useFormStore.persist.hasHydrated();
 	const form = useForm({
@@ -68,7 +73,6 @@ const FormPage = () => {
 		setValue('stateProvince', formData['stateProvince']);
 		setValue('country', formData['country']);
 	}, [street]);
-
 
 	useEffect(() => {
 		//on hydration, update from fields from data stored in localstorage
@@ -108,11 +112,10 @@ const FormPage = () => {
 
 	useEffect(() => {
 		if (isComplete != undefined) {
-			resetState()
-			resetState()
+			resetState();
+			resetState();
 			window.location.href = isComplete.redirect_url;
 		}
-
 	}, [isComplete]);
 
 	useEffect(() => {
@@ -138,7 +141,6 @@ const FormPage = () => {
 	}
 
 	async function restartSession(id: string, check: boolean) {
-
 		if (check) {
 			const v = await getSession(id);
 			if (v.success) {
@@ -153,7 +155,7 @@ const FormPage = () => {
 			}
 		}
 
-		resetState()
+		resetState();
 		window.location.href = '/';
 		return;
 	}
@@ -186,13 +188,24 @@ const FormPage = () => {
 		<ConsentStep control={control} errors={errors} />,
 	];
 
+	const steps = useMemo(() => stepsList, [control, errors, setValue]);
 
-	const steps = useMemo(
-		() => stepsList,
-		[control, errors, setValue],
-	);
+	const {
+		currentFormStep,
+		setCurrentFormStepNext,
+		setCurrentFormStepBack,
+		step,
+		isLastStep,
+		next,
+		steps: totalSteps,
+		back: goToPreviousStep,
+	} = useMultistepForm(steps);
 
-	const { step, isLastStep, next } = useMultistepForm(steps);
+	// console.log(totalSteps);
+	// console.log(currentStepIndex);
+	const totalNoForms = totalSteps.length;
+
+	// const [currentFormStep, setCurrentFormStep] = useState(1);
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
@@ -209,9 +222,13 @@ const FormPage = () => {
 			step: stepHighlight,
 			formData: formData,
 		});
-		console.log("Update response", response);
+		console.log('Update response', response);
+
 		if (!(response.success ?? false)) {
 			return;
+		}
+		if (currentFormStep <= totalNoForms) {
+			setCurrentFormStepNext();
 		}
 		if (stepHighlight === 'product' && response?.data?.paid) {
 			next();
@@ -220,7 +237,7 @@ const FormPage = () => {
 		}
 		if (stepHighlight === 'payment') {
 			if (response?.data?.redirect_url) {
-				return window.location.href = response.data.redirect_url;
+				return (window.location.href = response.data.redirect_url);
 			}
 
 			if (!response?.data?.paid) {
@@ -229,16 +246,24 @@ const FormPage = () => {
 		}
 		if (stepHighlight === 'sign') {
 			setIsComplete(response.data);
-			return
+			return;
 		}
 		if (!isLastStep) return next();
-
 	};
 
 	return (
 		<div className="w-full max-w-[900px] ">
-			<div className="lg:hidden">
+			{/* <div className="lg:hidden">
 				<FormProgressBar className="justify-center" />
+			</div> */}
+			<div className="w-full justify-center flex pt-2 sm:pt-5 pb-1 sm:pb-3">
+				{/* <span>
+					{currentFormStep} / {totalNoForms}
+				</span> */}
+				<CircularProgressBar
+					step={currentFormStep}
+					totalSteps={totalNoForms}
+				/>
 			</div>
 			<FormContext.Provider value={{ formSession, setFormSession }}>
 				<Form {...form}>
@@ -247,28 +272,50 @@ const FormPage = () => {
 						className="space-y-8 py-4"
 					>
 						{step}
-						<div className="flex flex-col justify-end gap-4">
-
+						<div
+							className={`flex flex-wrap ${currentFormStep > 1 ? 'justify-between' : 'justify-end'}  gap-4`}
+						>
+							{currentFormStep > 1 && (
+								<Button
+									variant={'green'}
+									size={'lg'}
+									type="button"
+									onClick={() => {
+										goToPreviousStep();
+										setCurrentFormStepBack();
+									}}
+									className=" w-[130px] bg-Green-100 flex justify-between items-center"
+								>
+									{/* <ArrowLeft
+										size="20"
+										className="text-secondary-foreground"
+									/> */}
+									<span className="uppercase">Previous</span>
+								</Button>
+							)}
 							<Button
 								variant={'green'}
 								size={'lg'}
 								type="submit"
-								className="w-full flex justify-between items-center"
+								className={` ${currentFormStep <= 1 ? 'w-full justify-between' : 'w-[130px] justify-end'} bg-Green-100 flex  items-center`}
 							>
 								<span className="uppercase">
 									{isLastStep ? 'Submit' : 'Next'}
 								</span>
-								<ArrowRight
-									size="24"
-									className="text-secondary-foreground"
-								/>
+								{currentFormStep <= 1 && (
+									<ArrowRight
+										size="24"
+										className="text-secondary-foreground"
+									/>
+								)}
 							</Button>
 						</div>
 					</form>
 				</Form>
-				<div className="hidden lg:block">
+
+				{/* <div className="hidden lg:block">
 					<FormProgressBar className="justify-end" />
-				</div>
+				</div> */}
 			</FormContext.Provider>
 		</div>
 	);

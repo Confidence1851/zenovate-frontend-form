@@ -86,9 +86,9 @@ const FormProductSelection = <TFormValues extends Record<string, unknown>>({
 
 		let list: SelectedProduct[] = [];
 		products.forEach((p) => {
-			pre_selected.filter((selected: any) => {
-				if (selected.product_id === p.id) {
-					list.push(selected as SelectedProduct);
+			pre_selected.filter((product_id: any) => {
+				if (product_id === p.id) {
+					list.push({product_id:product_id} as SelectedProduct);
 				}
 				return false;
 			});

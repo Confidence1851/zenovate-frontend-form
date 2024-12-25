@@ -5,6 +5,7 @@ interface FormState {
 	formData: Record<string, any>;
 	fields: Record<string, any>;
 	currentStepIndex: number;
+	currentFormStep: number;
 	sessionId: string;
 	selectedProducts: SelectedProduct[];
 	stepHighlight: Highlights;
@@ -18,6 +19,8 @@ interface FormActions {
 	setSessionId: (id: string) => void;
 	gotoNextStep: () => void;
 	gotoPrevStep: () => void;
+	setCurrentFormStepNext: () => void;
+	setCurrentFormStepBack: () => void;
 	setCurrentStepIndex: (index: number) => void;
 	updateSelectedProducts: (product: SelectedProduct) => void;
 	updateStepHighlight: (step: Highlights) => void;
@@ -25,14 +28,13 @@ interface FormActions {
 	resetState: () => void;
 }
 
-
-
 const useFormStore = create(
 	persist<FormState & FormActions>(
 		(set) => ({
 			fields: {},
 			formData: {},
 			currentStepIndex: 0,
+			currentFormStep: 1,
 			sessionId: '',
 			selectedProducts: [],
 			stepHighlight: 'info',
@@ -90,7 +92,16 @@ const useFormStore = create(
 					return newState;
 				}),
 			setFormData: (data) => set(() => ({ formData: data })),
-			setSelectedProducts: (data) => set(() => ({ selectedProducts: data })),
+			setSelectedProducts: (data) =>
+				set(() => ({ selectedProducts: data })),
+			setCurrentFormStepNext: () =>
+				set((state) => ({
+					currentFormStep: state.currentFormStep + 1,
+				})),
+			setCurrentFormStepBack: () =>
+				set((state) => ({
+					currentFormStep: state.currentFormStep - 1,
+				})),
 			gotoNextStep: () =>
 				set((state) => ({
 					currentStepIndex: state.currentStepIndex + 1,
@@ -101,8 +112,7 @@ const useFormStore = create(
 				})),
 			setCurrentStepIndex: (index: number) =>
 				set(() => ({ currentStepIndex: index })),
-			setSessionId: (id: string) =>
-				set(() => ({ sessionId: id })),
+			setSessionId: (id: string) => set(() => ({ sessionId: id })),
 			resetState: () => {
 				set(() => ({
 					fields: {},
@@ -111,16 +121,16 @@ const useFormStore = create(
 					sessionId: '',
 					selectedProducts: [],
 					stepHighlight: 'info',
-					paid: false
-				}))
-			}
+					paid: false,
+				}));
+			},
 		}),
 
 		{
 			name: 'form-storage',
 			storage: createJSONStorage(() => localStorage),
 			onRehydrateStorage: () => (state) => {
-				// 
+				//
 			},
 		},
 	),

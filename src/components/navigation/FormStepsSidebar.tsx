@@ -68,13 +68,13 @@ const FormStepsSidebar = () => {
 								</div>
 							))}
 						</div>
-						<div
+						{/* <div
 							className={` ${stepHighlight === 'questions' ||
 								stepHighlight === 'sign'
 								? ' bg-gradient-to-t from-transparent to-OffWhite-100 from-20%'
 								: ' bg-gradient-to-b from-transparent to-OffWhite-100 from-20%'
 								} absolute -top-40 left-0 w-full h-[500px] pointer-events-none duration-700 `}
-						/>
+						/> */}
 					</div>
 				</div>
 

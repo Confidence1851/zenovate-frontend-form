@@ -36,6 +36,7 @@
 		"micro": "^10.0.1",
 		"next": "14.2.13",
 		"raw-body": "^3.0.0",
+		"rc-progress": "^4.0.0",
 		"react": "^18",
 		"react-day-picker": "^8.10.1",
 		"react-dom": "^18",
