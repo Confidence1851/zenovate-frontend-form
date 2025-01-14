@@ -1,5 +1,5 @@
 import React from 'react';
-import { Circle } from 'rc-progress';
+import { Line } from 'rc-progress';
 
 const CircularProgressBar = ({
 	step,
@@ -11,29 +11,15 @@ const CircularProgressBar = ({
 	const percentage = (step / totalSteps) * 100;
 
 	return (
-		<div
-			style={{ width: 60, height: 60, position: 'relative' }}
-			className="z-1"
-		>
-			<Circle
+		<div className="relative w-full max-w-md">
+			<Line
 				percent={percentage}
-				strokeWidth={8}
-				trailWidth={8}
-				strokeColor="#162c15"
+				strokeWidth={4}
+				trailWidth={4}
+				strokeColor="hsl(188 21% 36%)"
+				trailColor="hsl(180 60% 94%)"
+				strokeLinecap="butt"
 			/>
-			<div
-				style={{
-					position: 'absolute',
-					top: '50%',
-					left: '50%',
-					transform: 'translate(-50%, -50%)',
-					fontSize: '14px',
-					fontWeight: '500',
-					color: '#162c15',
-				}}
-			>
-				{`${step}/${totalSteps}`}
-			</div>
 		</div>
 	);
 };
