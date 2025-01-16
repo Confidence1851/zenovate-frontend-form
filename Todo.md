@@ -100,7 +100,6 @@
         55 |          mode: 'all',
         GET /9df7e5b5-8530-4871-b556-30ae8c35b812 500 in 2332ms
 
-[x] locally couldnt start form
-was backend not running at port 8000 by itself
+[x] locally couldnt start form was backend not running at port 8000 by itself
 [x] review concent form
 [x] placement on concent and agreement "Private Policy", no space
