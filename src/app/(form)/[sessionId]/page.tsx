@@ -216,7 +216,7 @@ const FormPage = () => {
 		formData['selectedProducts'] = selectedProducts;
 
 		console.log(formData);
-		
+
 		const response = await updateSession({
 			sessionId: sessionId,
 			step: stepHighlight,
@@ -284,7 +284,7 @@ const FormPage = () => {
 										goToPreviousStep();
 										setCurrentFormStepBack();
 									}}
-									className=" w-[130px] bg-Green-100 flex justify-between items-center"
+									className=" w-[130px] flex justify-between items-center"
 								>
 									{/* <ArrowLeft
 										size="20"
@@ -297,7 +297,7 @@ const FormPage = () => {
 								variant={'green'}
 								size={'lg'}
 								type="submit"
-								className={` ${currentFormStep <= 1 ? 'w-full justify-between' : 'w-[130px] justify-end'} bg-Green-100 flex  items-center`}
+								className={` ${currentFormStep <= 1 ? 'w-full justify-between' : 'w-[130px] justify-end'} flex  items-center`}
 							>
 								<span className="uppercase">
 									{isLastStep ? 'Submit' : 'Next'}

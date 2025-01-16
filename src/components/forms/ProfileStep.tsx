@@ -1,32 +1,34 @@
-"use client";
+'use client';
 
-import FormDatePicker from "../common/FormDatePicker";
-import FormInputText from "../common/FormInputText";
+import FormDatePicker from '../common/FormDatePicker';
+import FormInputText from '../common/FormInputText';
 import {
   Control,
   DeepMap,
   FieldError,
   FieldErrors,
   FieldValues,
-} from "react-hook-form";
-import FormWrapper from "./FormWrapper";
-import FormSelectPreferredContactMethod from "../common/FormSelectPreferredContactMethod";
-import { useFormStore } from "@/stores/formStore";
-import { useEffect } from "react";
+} from 'react-hook-form';
+import FormWrapper from './FormWrapper';
+import FormSelectPreferredContactMethod from '../common/FormSelectPreferredContactMethod';
+import { useFormStore } from '@/stores/formStore';
+import { useEffect } from 'react';
 
 type ProfileStepFormProps<TFormValues extends FieldValues = FieldValues> = {
   control: Control<TFormValues>;
-  errors: Partial<DeepMap<TFormValues, FieldError>> | FieldErrors<TFormValues>;
+  errors:
+  | Partial<DeepMap<TFormValues, FieldError>>
+  | FieldErrors<TFormValues>;
 };
 
 const ProfileStep = ({ control, errors }: ProfileStepFormProps) => {
   const updateStepHighlight = useFormStore(
-    (state) => state.updateStepHighlight
+    (state) => state.updateStepHighlight,
   );
 
   useEffect(() => {
     // update the current step, used to style the sidebar
-    updateStepHighlight("info");
+    updateStepHighlight('info');
   }, []);
   return (
     <FormWrapper

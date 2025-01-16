@@ -38,7 +38,7 @@ const TooltipSlider: React.FC<SliderProps> = ({ stepData }) => {
 								<h3 className="uppercase text-base font-semibold ">
 									{item.title}
 								</h3>
-								<Info className="material-symbols-sharp text-Green-300" />
+								<Info className="material-symbols-sharp text-[#48696E]" />
 							</TooltipTrigger>
 							<TooltipContent
 								className="bg-Black-100 text-White-100 w-full max-w-[500px] p-4 rounded-sm rela z-40 !-top-10"
