@@ -49,8 +49,11 @@ const AllergiesAndMedications = ({
   const updateStepHighlight = useFormStore(
     (state) => state.updateStepHighlight
   );
+  const setCurrentFormStep = useFormStore.getState().setCurrentFormStep;
+    const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
 
   useEffect(() => {
+    setCurrentFormStep(6);
     updateStepHighlight("questions");
   }, []);
 

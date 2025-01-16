@@ -29,9 +29,13 @@ const ProductSelectionStep = ({
   const updateStepHighlight = useFormStore(
     (state) => state.updateStepHighlight
   );
+  const setCurrentFormStep = useFormStore.getState().setCurrentFormStep;
+  const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
 
 
   useEffect(() => {
+    setCurrentFormStep(3);
+    setCurrentStepIndex(2);
     updateStepHighlight("product");
   }, []);
   return (

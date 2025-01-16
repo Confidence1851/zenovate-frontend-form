@@ -2,11 +2,11 @@
 [ ] product image on 3/13
 [ ] edit UI on price selection 4/13
 [ ] edit UI checkout
-[ ] fix counter after stripe payment
+[x] fix counter after stripe payment
 [ ] edit dashboard user
 [ ] deploy testing
 [ ] button colors after brand change
-[ ] active errors on loading
+[x] active errors on loading
 
     error 1
         Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components

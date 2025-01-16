@@ -28,8 +28,8 @@ type FormInputTextProps<TFormValues extends FieldValues = FieldValues> = {
 	rightElement?: ReactNode;
 	leftElement?: ReactNode;
 	errors?:
-		| Partial<DeepMap<TFormValues, FieldError>>
-		| FieldErrors<TFormValues>;
+	| Partial<DeepMap<TFormValues, FieldError>>
+	| FieldErrors<TFormValues>;
 	className?: string;
 	updateLocalStorage?: boolean;
 } & Omit<InputProps, 'name'>;
@@ -57,9 +57,8 @@ const FormInputText = <TFormValues extends Record<string, unknown>>({
 			render={({ field }) => (
 				<FormItem>
 					<p
-						className={`${
-							hasError ? 'error_tag' : 'text-Green-100'
-						} form-label`}
+						className={`${hasError ? 'error_tag' : 'text-Green-100'
+							} form-label`}
 					>
 						{label}
 					</p>
@@ -76,13 +75,11 @@ const FormInputText = <TFormValues extends Record<string, unknown>>({
 								<Input
 									className={cn(
 										`form-input placeholder:text-Gray-100
-                 ${leftElement ? 'pl-12' : 'pl-[18px]'}  ${
-						rightElement ? 'pr-12' : 'pr-[18px]'
-					} ${
-						hasError
-							? 'focus-visible:ring-red-600'
-							: 'focus-visible:ring-dark_text '
-					} `,
+                 ${leftElement ? 'pl-12' : 'pl-[18px]'}  ${rightElement ? 'pr-12' : 'pr-[18px]'
+										} ${hasError
+											? 'focus-visible:ring-red-600'
+											: 'focus-visible:ring-dark_text '
+										} `,
 										className,
 									)}
 									placeholder={placeholder}
@@ -106,34 +103,34 @@ const FormInputText = <TFormValues extends Record<string, unknown>>({
 								{/* used to toggle show password if input is of type passowrd */}
 								{(rightElement ||
 									props.type === 'password') && (
-									<div className="absolute rounded-r-lg top-0 flex items-center h-full pl-1 right-2 bg-transparent">
-										{props.type === 'password' ? (
-											<Button
-												className="h-fit w-fit bg-transparent hover:bg-transparent p-0 shadow-none"
-												type="button"
-												onClick={() =>
-													setShow((prev) => !prev)
-												}
-											>
-												{!show ? (
-													<Eye
-														size="26"
-														color="#162c15"
-														variant="Bold"
-													/>
-												) : (
-													<EyeSlash
-														size="26"
-														color="#162c15"
-														variant="Bold"
-													/>
-												)}
-											</Button>
-										) : (
-											rightElement
-										)}
-									</div>
-								)}
+										<div className="absolute rounded-r-lg top-0 flex items-center h-full pl-1 right-2 bg-transparent">
+											{props.type === 'password' ? (
+												<Button
+													className="h-fit w-fit bg-transparent hover:bg-transparent p-0 shadow-none"
+													type="button"
+													onClick={() =>
+														setShow((prev) => !prev)
+													}
+												>
+													{!show ? (
+														<Eye
+															size="26"
+															color="#162c15"
+															variant="Bold"
+														/>
+													) : (
+														<EyeSlash
+															size="26"
+															color="#162c15"
+															variant="Bold"
+														/>
+													)}
+												</Button>
+											) : (
+												rightElement
+											)}
+										</div>
+									)}
 							</>
 						</FormControl>
 					</div>

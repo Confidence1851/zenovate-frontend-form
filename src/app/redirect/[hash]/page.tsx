@@ -13,6 +13,7 @@ const RedirectPage = () => {
     const sessionId = useFormStore.getState().sessionId;
     const formData = useFormStore.getState().formData;
     const setField = useFormStore.getState().setField;
+    const setCurrentFormStep = useFormStore.getState().setCurrentFormStep;
     const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
     const updateStepHighlight = useFormStore.getState().updateStepHighlight;
 
@@ -33,6 +34,7 @@ const RedirectPage = () => {
             if (data.key == "selected_products") {
                 if (sessionId.length > 0) {
                     if (formData.country) {
+                        setCurrentFormStep(3);
                         setCurrentStepIndex(2);
                         updateStepHighlight("product");
                         return router.push("/" + sessionId);
@@ -46,6 +48,7 @@ const RedirectPage = () => {
             }
 
             if (data.key == "payment") {
+                setCurrentFormStep(3);
                 setCurrentStepIndex(2);
                 updateStepHighlight("product");
                 return router.push("/" + data.value);

@@ -25,9 +25,12 @@ const ProfileStep = ({ control, errors }: ProfileStepFormProps) => {
   const updateStepHighlight = useFormStore(
     (state) => state.updateStepHighlight,
   );
+  const setCurrentFormStep = useFormStore.getState().setCurrentFormStep;
+  
 
   useEffect(() => {
     // update the current step, used to style the sidebar
+    setCurrentFormStep(1);
     updateStepHighlight('info');
   }, []);
   return (

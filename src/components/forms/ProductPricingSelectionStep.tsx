@@ -41,7 +41,7 @@ const ProductPricingSelectionStep = ({
       formTitle="Product Pricing Selection"
       formSubtitle="Please select the products you are interested in"
     >
-       <div className="pb-8">
+      <div className="pb-8">
         <FormProductPriceSelection
           control={control}
           name="selectedProductPrices"

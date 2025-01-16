@@ -21,6 +21,7 @@ interface FormActions {
 	gotoPrevStep: () => void;
 	setCurrentFormStepNext: () => void;
 	setCurrentFormStepBack: () => void;
+	setCurrentFormStep: (index: number) => void;
 	setCurrentStepIndex: (index: number) => void;
 	updateSelectedProducts: (product: SelectedProduct) => void;
 	updateStepHighlight: (step: Highlights) => void;
@@ -94,6 +95,9 @@ const useFormStore = create(
 			setFormData: (data) => set(() => ({ formData: data })),
 			setSelectedProducts: (data) =>
 				set(() => ({ selectedProducts: data })),
+			
+			setCurrentFormStep: (index: number) =>
+					set(() => ({ currentFormStep: index })),
 			setCurrentFormStepNext: () =>
 				set((state) => ({
 					currentFormStep: state.currentFormStep + 1,

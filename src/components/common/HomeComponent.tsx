@@ -97,7 +97,7 @@ const HomeComponent = () => {
 	};
 
 	return (
-		<div className=" min-h-[70dvh] pb-10 overflow-hidden">
+		<div className=" min-h-[70dvh] pb-10 overflow-hidden" suppressHydrationWarning>
 			<div className="mb-8 space-y-4 border-b border-Gray-100 pb-4 px-2">
 				<h1 className="title t-h1">START YOUR JOURNEY</h1>
 				<h3 className="title t-h3">Why Choose Zenovate?</h3>

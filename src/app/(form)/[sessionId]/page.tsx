@@ -252,72 +252,80 @@ const FormPage = () => {
 	};
 
 	return (
-		<div className="w-full max-w-[900px] ">
-			{/* <div className="lg:hidden">
+		<>
+			{isComplete ? <>
+				{/* Show loading state here on redirect */}
+				<div>Loading state</div>
+			</>
+				:
+				<div className="w-full max-w-[900px] ">
+					{/* <div className="lg:hidden">
 				<FormProgressBar className="justify-center" />
 			</div> */}
-			<div className="w-full justify-center flex pt-2 sm:pt-5 pb-1 sm:pb-3">
-				{/* <span>
+					<div className="w-full justify-center flex pt-2 sm:pt-5 pb-1 sm:pb-3">
+						{/* <span>
 					{currentFormStep} / {totalNoForms}
 				</span> */}
-				<CircularProgressBar
-					step={currentFormStep}
-					totalSteps={totalNoForms}
-				/>
-			</div>
-			<FormContext.Provider value={{ formSession, setFormSession }}>
-				<Form {...form}>
-					<form
-						onSubmit={handleSubmit(onSubmit)}
-						className="space-y-8 py-4"
-					>
-						{step}
-						<div
-							className={`flex flex-wrap ${currentFormStep > 1 ? 'justify-between' : 'justify-end'}  gap-4`}
-						>
-							{currentFormStep > 1 && (
-								<Button
-									variant={'green'}
-									size={'lg'}
-									type="button"
-									onClick={() => {
-										goToPreviousStep();
-										setCurrentFormStepBack();
-									}}
-									className=" w-[130px] flex justify-between items-center"
+						<CircularProgressBar
+							step={currentFormStep}
+							totalSteps={totalNoForms}
+						/>
+					</div>
+					<FormContext.Provider value={{ formSession, setFormSession }}>
+						<Form {...form}>
+							<form
+								onSubmit={handleSubmit(onSubmit)}
+								className="space-y-8 py-4"
+							>
+								{step}
+								<div
+									className={`flex flex-wrap ${currentFormStep > 1 ? 'justify-between' : 'justify-end'}  gap-4`}
 								>
-									{/* <ArrowLeft
+									{currentFormStep > 1 && (
+										<Button
+											variant={'green'}
+											size={'lg'}
+											type="button"
+											onClick={() => {
+												goToPreviousStep();
+												setCurrentFormStepBack();
+											}}
+											className=" w-[130px] flex justify-between items-center"
+										>
+											{/* <ArrowLeft
 										size="20"
 										className="text-secondary-foreground"
 									/> */}
-									<span className="uppercase">Previous</span>
-								</Button>
-							)}
-							<Button
-								variant={'green'}
-								size={'lg'}
-								type="submit"
-								className={` ${currentFormStep <= 1 ? 'w-full justify-between' : 'w-[130px] justify-end'} flex  items-center`}
-							>
-								<span className="uppercase">
-									{isLastStep ? 'Submit' : 'Next'}
-								</span>
-								{currentFormStep <= 1 && (
-									<ArrowRight
-										size="24"
-										className="text-secondary-foreground"
-									/>
-								)}
-							</Button>
-						</div>
-					</form>
-				</Form>
+											<span className="uppercase">Previous</span>
+										</Button>
+									)}
+									<Button
+										variant={'green'}
+										size={'lg'}
+										type="submit"
+										className={` ${currentFormStep <= 1 ? 'w-full justify-between' : 'w-[130px] justify-end'} flex  items-center`}
+									>
+										<span className="uppercase">
+											{isLastStep ? 'Submit' : 'Next'}
+										</span>
+										{currentFormStep <= 1 && (
+											<ArrowRight
+												size="24"
+												className="text-secondary-foreground"
+											/>
+										)}
+									</Button>
+								</div>
+							</form>
+						</Form>
 
-				{/* <div className="hidden lg:block">
+						{/* <div className="hidden lg:block">
 					<FormProgressBar className="justify-end" />
 				</div> */}
-			</FormContext.Provider>
-		</div>
+					</FormContext.Provider>
+				</div>
+			}
+		</>
 	);
 };
 

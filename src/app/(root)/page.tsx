@@ -1,4 +1,6 @@
-import HomeComponent from '@/components/common/HomeComponent';
+// import HomeComponent from '@/components/common/HomeComponent';
+import dynamic from 'next/dynamic';
+const HomeComponent = dynamic(() => import('@/components/common/HomeComponent'), { ssr: false });
 
 const HomePage = () => {
 	return (
