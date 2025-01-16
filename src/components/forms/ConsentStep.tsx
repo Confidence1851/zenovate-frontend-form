@@ -59,7 +59,7 @@ const ConsentStep = ({ control, errors }: ConsentStepFormProps) => {
 					<div className="flex flex-col gap-10">
 						<p className="text-justify text-base">
 							To ensure the best experience and comply with healthcare regulations, we kindly ask you to
-							review and agree to our <a href="/legal/terms-of-service" className="text-Blue-500 underline">Terms of Service</a> and
+							review and agree to our <a href="/legal/terms-of-service" className="text-Blue-500 underline">Terms of Service</a> and {" "}
 							<a href="/legal/privacy-policy" className="text-Blue-500 underline">Privacy Policy</a>. Your privacy and safety are our top priorities.
 							By consenting, you authorize us to collect and process your personal and medical information to provide
 							healthcare services, including prescription medications, treatment recommendations, and relevant medical updates.
