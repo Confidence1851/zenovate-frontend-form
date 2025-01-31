@@ -28,6 +28,8 @@ const RedirectPage = () => {
         const data = decodeRedirectHash(
             Array.isArray(params?.hash) ? params.hash[0] : params?.hash ?? ""
         );
+        console.log("Decoded data", data , params);
+
         if (data) {
             setField(data.key, data.value);
 
