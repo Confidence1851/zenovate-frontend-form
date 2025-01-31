@@ -30,47 +30,47 @@ const RedirectPage = () => {
         );
         console.log("Decoded data", data , params);
 
-        if (data) {
-            setField(data.key, data.value);
+        // if (data) {
+        //     setField(data.key, data.value);
 
-            if (data.key == "selected_products") {
-                if (sessionId.length > 0) {
-                    if (formData.country) {
-                        setCurrentFormStep(3);
-                        setCurrentStepIndex(2);
-                        updateStepHighlight("product");
-                        return router.push("/" + sessionId);
-                    } else {
-                        setCurrentStepIndex(0);
-                        updateStepHighlight("info");
-                        return router.push("/" + sessionId);
-                    }
-                }
+        //     if (data.key == "selected_products") {
+        //         if (sessionId.length > 0) {
+        //             if (formData.country) {
+        //                 setCurrentFormStep(3);
+        //                 setCurrentStepIndex(2);
+        //                 updateStepHighlight("product");
+        //                 return router.push("/" + sessionId);
+        //             } else {
+        //                 setCurrentStepIndex(0);
+        //                 updateStepHighlight("info");
+        //                 return router.push("/" + sessionId);
+        //             }
+        //         }
 
-            }
+        //     }
 
-            if (data.key == "payment") {
-                setCurrentFormStep(3);
-                setCurrentStepIndex(2);
-                updateStepHighlight("product");
-                return router.push("/" + data.value);
-            }
+        //     if (data.key == "payment") {
+        //         setCurrentFormStep(3);
+        //         setCurrentStepIndex(2);
+        //         updateStepHighlight("product");
+        //         return router.push("/" + data.value);
+        //     }
 
-            if (data.key == "recreate_session") {
-                setField(data.key, "");
+        //     if (data.key == "recreate_session") {
+        //         setField(data.key, "");
 
-                let response = await recreateSession(data.value.id,
-                    data.value.token
-                    , await getGeoInfo());
-                if (response.success) {
-                    setCurrentStepIndex(0);
-                    updateStepHighlight("info");
-                    setSessionId('');
-                    return router.push("/" + response.data.id);
-                }
-            }
-        }
-        return router.push("/");
+        //         let response = await recreateSession(data.value.id,
+        //             data.value.token
+        //             , await getGeoInfo());
+        //         if (response.success) {
+        //             setCurrentStepIndex(0);
+        //             updateStepHighlight("info");
+        //             setSessionId('');
+        //             return router.push("/" + response.data.id);
+        //         }
+        //     }
+        // }
+        // return router.push("/");
     }
 
     return (
