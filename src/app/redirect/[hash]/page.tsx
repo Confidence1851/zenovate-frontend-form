@@ -25,6 +25,9 @@ const RedirectPage = () => {
     }, []);
 
     async function handle() {
+        console.log(params , process.env);
+        alert("Tada");
+        
         const data = decodeRedirectHash(
             Array.isArray(params?.hash) ? params.hash[0] : params?.hash ?? ""
         );
