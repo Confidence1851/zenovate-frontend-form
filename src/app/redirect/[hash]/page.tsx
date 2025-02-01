@@ -1,6 +1,6 @@
 'use client';
 
-import { decodeRedirectHash, getGeoInfo } from '@/utils/functions';
+// import { decodeRedirectHash, getGeoInfo } from '@/utils/functions';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect } from "react";
 import { useFormStore } from '@/stores/formStore';
@@ -8,20 +8,20 @@ import { recreateSession } from '@/server-actions/api.actions';
 
 const RedirectPage = () => {
     const params = useParams();
-    // const router = useRouter();
+    const router = useRouter();
 
-    // const sessionId = useFormStore.getState().sessionId;
-    // const formData = useFormStore.getState().formData;
-    // const setField = useFormStore.getState().setField;
-    // const setCurrentFormStep = useFormStore.getState().setCurrentFormStep;
-    // const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
-    // const updateStepHighlight = useFormStore.getState().updateStepHighlight;
+    const sessionId = useFormStore.getState().sessionId;
+    const formData = useFormStore.getState().formData;
+    const setField = useFormStore.getState().setField;
+    const setCurrentFormStep = useFormStore.getState().setCurrentFormStep;
+    const setCurrentStepIndex = useFormStore.getState().setCurrentStepIndex;
+    const updateStepHighlight = useFormStore.getState().updateStepHighlight;
 
-    // const setSessionId = useFormStore.getState().setSessionId;
+    const setSessionId = useFormStore.getState().setSessionId;
 
 
     useEffect(() => {
-        // handle();
+        handle();
     }, []);
 
     async function handle() {
