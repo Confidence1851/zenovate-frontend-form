@@ -20,11 +20,6 @@ interface SliderProps {
 
 const TooltipSlider: React.FC<SliderProps> = ({ stepData }) => {
 
-	React.useEffect(() => {
-		// console.log('Client:', document.querySelector('button'));
-	}, []);
-
-
 	return (
 		<div suppressHydrationWarning={true}>
 			<TooltipProvider delayDuration={300}>

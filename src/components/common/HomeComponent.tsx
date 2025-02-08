@@ -77,7 +77,6 @@ const HomeComponent = () => {
 		// try {
 		// 4. Send the data to API
 		const session = await startSession(await getGeoInfo());
-		console.log(session);
 		setSessionId(session.data.id);
 		setFormSessionId(session.data.id);
 		return session.data.id;
