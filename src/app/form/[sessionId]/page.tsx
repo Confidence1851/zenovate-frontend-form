@@ -9,8 +9,7 @@ import { useFormStore } from '@/stores/formStore';
 import ProfileStep from '@/components/forms/ProfileStep';
 import { Form } from '@/components/ui/form';
 import ContactInformationStep from '@/components/forms/ContactInformationStep';
-import { ArrowLeft, ArrowRight } from 'iconsax-react';
-import FormProgressBar from '@/components/common/FormProgressBar';
+import {  ArrowRight } from 'iconsax-react';
 import ProductSelectionStep from '@/components/forms/ProductSelectionStep';
 import AllergiesAndMedicationsStep from '@/components/forms/AllergiesAndMedicationsStep';
 import MedicalHistoryStepOne from '@/components/forms/MedicalHistory-StepOne';
@@ -121,11 +120,11 @@ const FormPage = () => {
 	useEffect(() => {
 		if (isComplete == undefined) {
 			validateSession();
-		}
+		}		
 	}, [sessionId, pathname]);
 
 	function validateSession() {
-		const url_id = (pathname ?? '').replace('/', '');
+		const url_id = pathname?.split('/').pop() ?? '';
 		// console.log(url_id, sessionId);
 		if (url_id != sessionId) {
 			return restartSession(url_id, true);
@@ -150,7 +149,7 @@ const FormPage = () => {
 				setSessionId(session?.id ?? '');
 				setFormData(session?.formData ?? {});
 				setSelectedProducts(session?.formData?.selectedProducts ?? []);
-				window.location.href = '/' + (session?.id ?? '');
+				window.location.href = '/form/' + (session?.id ?? '');
 				return;
 			}
 		}

@@ -23,6 +23,7 @@ import useScreenWidth from '@/hooks/useScreenWidth';
 import { useFormStore } from '@/stores/formStore';
 import { startSession } from '@/server-actions/api.actions';
 import { getGeoInfo } from '@/utils/functions';
+import { formUrl } from '@/utils/form';
 
 const HomeComponent = () => {
 	const [current, setCurrent] = useState(0);
@@ -75,7 +76,7 @@ const HomeComponent = () => {
 	useEffect(() => {
 		const start = async () => {
 			try {
-				
+
 
 				// 4. Send the data to API
 				const session = await startSession(await getGeoInfo());
@@ -93,7 +94,7 @@ const HomeComponent = () => {
 	}, [formSessionId]);
 
 	const handleStart = async () => {
-		router.push(`${formSessionId}`);
+		return router.push(formUrl(formSessionId));
 	};
 
 	return (

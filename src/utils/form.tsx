@@ -46,3 +46,8 @@ export const formSidebarMenu = [
     stepHighlights: 'sign',
   },
 ];
+
+
+export function formUrl(id: any){
+  return `/form/${id}`;
+}
