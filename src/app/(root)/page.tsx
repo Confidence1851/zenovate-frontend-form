@@ -3,9 +3,6 @@ import dynamic from 'next/dynamic';
 const HomeComponent = dynamic(() => import('@/components/common/HomeComponent'), { ssr: false });
 
 const HomePage = () => {
-	console.log(process.env.NEXT_PUBLIC_ENCRYPTION_KEY );
-	console.log(process.env.NEXT_PUBLIC_ENCRYPTION_IV  );
-	
 	return (
 		<div className="w-full px-2 max-w-[1550px] mx-auto min-h-screen flex justify-center items-center">
 			<HomeComponent />

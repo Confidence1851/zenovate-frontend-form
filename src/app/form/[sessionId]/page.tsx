@@ -125,12 +125,10 @@ const FormPage = () => {
 
 	function validateSession() {
 		const url_id = pathname?.split('/').pop() ?? '';
-		// console.log(url_id, sessionId);
 		if (url_id != sessionId) {
 			return restartSession(url_id, true);
 		}
 		getSession(sessionId).then((v) => {
-			// console.log("Session", v);
 			if (v.success) {
 				setFormSession(v.data);
 				return;
@@ -144,7 +142,6 @@ const FormPage = () => {
 			const v = await getSession(id);
 			if (v.success) {
 				const session = v.data;
-				// console.log(session);
 				setFormSession(session);
 				setSessionId(session?.id ?? '');
 				setFormData(session?.formData ?? {});
@@ -200,28 +197,18 @@ const FormPage = () => {
 		back: goToPreviousStep,
 	} = useMultistepForm(steps);
 
-	// console.log(totalSteps);
-	// console.log(currentStepIndex);
 	const totalNoForms = totalSteps.length;
-
-	// const [currentFormStep, setCurrentFormStep] = useState(1);
 	const stepHighlight = useFormStore((state) => state.stepHighlight);
 
 	const onSubmit = async () => {
 		setIsComplete(undefined);
-
-		// console.log("Form data", formData)
-		//trigger stripe payment when it is on the payment stageF
 		formData['selectedProducts'] = selectedProducts;
-
-		console.log(formData);
 
 		const response = await updateSession({
 			sessionId: sessionId,
 			step: stepHighlight,
 			formData: formData,
 		});
-		console.log('Update response', response);
 
 		if (!(response.success ?? false)) {
 			return;

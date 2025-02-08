@@ -1,7 +1,7 @@
-"use server";
+// "use server";
 import axios from 'axios';
 
-function baseUrl(path = '') {
+export function baseUrl(path = '') {
     return process.env.NEXT_PUBLIC_SERVER_URL + path;
 }
 

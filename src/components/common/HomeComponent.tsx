@@ -73,27 +73,31 @@ const HomeComponent = () => {
 		return formSessionId?.length > 0;
 	};
 
-	useEffect(() => {
-		const start = async () => {
-			try {
+	const start = async () => {
+		// try {
+		// 4. Send the data to API
+		const session = await startSession(await getGeoInfo());
+		console.log(session);
+		setSessionId(session.data.id);
+		setFormSessionId(session.data.id);
+		return session.data.id;
+		// } catch (error) {
+		// 	// console.error('Error in starting session:', error);
+		// }
+	};
 
 
-				// 4. Send the data to API
-				const session = await startSession(await getGeoInfo());
-				console.log(session);
-				setSessionId(session.data.id);
-				setFormSessionId(session.data.id);
-			} catch (error) {
-				// console.error('Error in starting session:', error);
-			}
-		};
-
-		if (!(getLocalSessionId()?.length > 0)) {
-			start();
-		}
-	}, [formSessionId]);
+	// useEffect(() => {
+	// 	if (!(getLocalSessionId()?.length > 0)) {
+	// 		start();
+	// 	}
+	// }, [formSessionId]);
 
 	const handleStart = async () => {
+		if (!(getLocalSessionId()?.length > 0)) {
+			const id = await start();
+			return router.push(formUrl(id));
+		}
 		return router.push(formUrl(formSessionId));
 	};
 
@@ -158,7 +162,7 @@ const HomeComponent = () => {
 							variant={'green'}
 							className={styles.button}
 							onClick={handleStart}
-							disabled={!canProceed()}
+							// disabled={!canProceed()}
 						>
 							<span>start</span>
 							<ArrowRightIcon className="h-4 w-4" />
