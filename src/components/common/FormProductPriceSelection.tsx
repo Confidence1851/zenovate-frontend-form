@@ -146,10 +146,10 @@ const FormProductPriceSelection = <TFormValues extends Record<string, unknown>>(
 												}}
 											>
 												<div>
-													<h3 className="font-semibold">Title</h3>
-													<p className="text-sm text-white-500">Subtitle</p>
+													<h3 className="font-semibold">{price.currency}{price.value}</h3>
+													<p className="text-sm text-white-500">Per Dose for <b className="text-my_dark"> {price.frequency} {price.unit.toUpperCase()}s</b></p>
 												</div>
-												<span className="text-sm font-medium">{price.currency}{price.value} / {price.unit.toUpperCase()}</span>
+												{/* <span className="text-sm font-medium"></span> */}
 											</div>
 										))}
 									</div>
