@@ -27,5 +27,7 @@ interface Checkout {
   products: Product[];
   sub_total: number;
   total: number;
+  discount_code?: string;
+  discount_amount?: number;
 }
 type Highlights = "info" | "product" | "payment" | "sign" | "questions";

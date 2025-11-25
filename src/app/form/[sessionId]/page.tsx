@@ -203,12 +203,18 @@ const FormPage = () => {
 	const onSubmit = async () => {
 		setIsComplete(undefined);
 		formData['selectedProducts'] = selectedProducts;
-
-		const response = await updateSession({
+		
+		// Include discount_code if it exists in formData
+		const updateData: any = {
 			sessionId: sessionId,
 			step: stepHighlight,
 			formData: formData,
-		});
+		};
+		if (formData['discount_code']) {
+			updateData.discount_code = formData['discount_code'];
+		}
+
+		const response = await updateSession(updateData);
 
 		if (!(response.success ?? false)) {
 			return;
