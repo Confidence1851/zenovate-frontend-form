@@ -37,3 +37,7 @@ next-env.d.ts
 
 
 .env
+
+docker-compose.temp.yml
+docker-compose.yml
+Dockerfile
