@@ -203,7 +203,7 @@ const FormPage = () => {
 	const onSubmit = async () => {
 		setIsComplete(undefined);
 		formData['selectedProducts'] = selectedProducts;
-		
+
 		// Include discount_code if it exists in formData
 		const updateData: any = {
 			sessionId: sessionId,
